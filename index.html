@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Luke Boppart — Additive Manufacturing Engineer</title>
+  <style>
+    :root {
+      --font-main: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+      --color-bg: #fff;
+      --color-text: #111;
+      --color-accent: #e30613;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: var(--font-main);
+      background-color: var(--color-bg);
+      color: var(--color-text);
+      line-height: 1.6;
+      padding: 4rem 2rem;
+      display: flex;
+      justify-content: center;
+    }
+
+    .container {
+      max-width: 960px;
+      width: 100%;
+      display: grid;
+      grid-template-columns: repeat(12, 1fr);
+      gap: 2rem;
+    }
+
+    header {
+      grid-column: span 12;
+      border-bottom: 1px solid #ccc;
+      margin-bottom: 2rem;
+    }
+
+    header h1 {
+      font-size: 2.5rem;
+      font-weight: 600;
+    }
+
+    main {
+      grid-column: span 8;
+    }
+
+    aside {
+      grid-column: span 4;
+      font-size: 0.9rem;
+      color: #555;
+    }
+
+    a {
+      color: var(--color-accent);
+      text-decoration: none;
+    }
+
+    a:hover {
+      text-decoration: underline;
+    }
+
+    footer {
+      grid-column: span 12;
+      margin-top: 4rem;
+      border-top: 1px solid #ccc;
+      padding-top: 1rem;
+      font-size: 0.8rem;
+      color: #999;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <h1>Luke Boppart</h1>
+      <p>Engineer | Additive Manufacturing | Software & Slicers</p>
+    </header>
+
+    <main>
+      <h2>About</h2>
+      <p>
+        I’m an engineer specializing in additive manufacturing. My work sits at the intersection of hardware and software — 
+        from tuning machines to developing and optimizing 3D slicers. I believe well-designed tools empower better results.
+      </p>
+
+      <h2>Focus Areas</h2>
+      <ul>
+        <li>Selective Laser Sintering (SLS)</li>
+        <li>Physics-based model placement</li>
+        <li>3D slicer architecture and optimization</li>
+        <li>Machine control systems and software tooling</li>
+      </ul>
+
+      <h2>Contact</h2>
+      <p>Feel free to <a href="mailto:luke@example.com">reach out via email</a> to talk shop or collaborate.</p>
+    </main>
+
+    <aside>
+      <h3>Now</h3>
+      <p>Exploring ways to make 3D print prep smarter, faster, and more intuitive through software innovation.</p>
+    </aside>
+
+    <footer>
+      &copy; 2025 Luke Boppart. Built with simplicity and grid discipline.
+    </footer>
+  </div>
+</body>
+</html>
