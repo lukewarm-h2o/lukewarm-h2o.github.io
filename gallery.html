@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Gallery – Luke Boppart</title>
+    <style>
+        :root {
+            --font-main: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+            --color-bg: #fff;
+            --color-text: #111;
+            --color-accent: #e30613;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: var(--font-main);
+            background-color: var(--color-bg);
+            color: var(--color-text);
+            line-height: 1.6;
+            padding: 4rem 2rem;
+            display: flex;
+            justify-content: center;
+        }
+
+        .container {
+            max-width: 960px;
+            width: 100%;
+            display: grid;
+            grid-template-columns: repeat(12, 1fr);
+            gap: 2rem;
+        }
+
+        header {
+            grid-column: span 12;
+            border-bottom: 1px solid #ccc;
+            margin-bottom: 2rem;
+        }
+
+        header h1 {
+            font-size: 2.5rem;
+            font-weight: 600;
+        }
+
+        main {
+            grid-column: span 8;
+        }
+
+        aside {
+            grid-column: span 4;
+            font-size: 0.9rem;
+            color: #555;
+        }
+
+        a {
+            color: var(--color-accent);
+            text-decoration: none;
+        }
+
+        a:hover {
+            text-decoration: underline;
+        }
+
+        nav a {
+            text-decoration: none;
+            color: #e30613;
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 1rem;
+            margin-top: 2rem;
+        }
+
+        .grid img {
+            width: 100%;
+            height: auto;
+            object-fit: contain;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+
+        footer {
+            grid-column: span 12;
+            margin-top: 4rem;
+            border-top: 1px solid #ccc;
+            padding-top: 1rem;
+            font-size: 0.8rem;
+            color: #999;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <header>
+            <h1>Luke Boppart</h1>
+            <p>Engineer | Additive Manufacturing | Software & Slicers</p>
+            <nav style="grid-column: span 12; margin-bottom: 2rem;">
+                <a href="index.html">Home</a> |
+                <a href="fun.html">Fun</a> |
+                <a href="gallery.html">Gallery</a>
+            </nav>
+            <h2>Photo Gallery</h2>
+        </header>
+        <main>
+            <div class="grid">
+                <img src="assets/images/IMG_0461.png">
+                <img src="assets/images/IMG_0448.png">
+                <img src="assets/images/IMG_0535.png">
+                <img src="assets/images/IMG_2350.png">
+                <img src="assets/images/IMG_2688.png" alt="Banana for scale">
+                <img src="assets/images/IMG_2357.PNG" alt="Plant Honey">
+                <img src="assets/images/IMG_3123.PNG" alt="Skelly">
+                <img src="assets/images/IMG_3124.PNG" alt="Stretch Honey">
+                <img src="assets/images/IMG_2982.png" alt="City Scape">
+                <img src="assets/images/IMG_0113.png" alt="Book Honey">
+                <img src="assets/images/IMG_3524.png" alt="3D printed toys">
+                
+                <!-- Add more as needed -->
+            </div>
+        </main>
+        <footer>
+            &copy; 2025 Luke Boppart. Built with simplicity in mind.
+        </footer>
+    </div>
+</body>
+
+</html>
