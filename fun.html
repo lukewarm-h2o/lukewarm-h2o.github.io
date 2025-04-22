@@ -1,0 +1,492 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>3D Physics Bucket – Drop STL</title>
+    <style>
+        :root {
+            --font-main: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+            --color-bg: #fff;
+            --color-text: #111;
+            --color-accent: #e30613;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        header {
+            grid-column: span 12;
+            border-bottom: 1px solid #ccc;
+            margin-bottom: 2rem;
+        }
+
+        header h1 {
+            font-size: 2.5rem;
+            font-weight: 600;
+        }
+
+        body {
+            font-family: var(--font-main);
+            background-color: var(--color-bg);
+            color: var(--color-text);
+            line-height: 1.6;
+            padding: 4rem 2rem;
+            display: flex;
+            justify-content: center;
+        }
+
+        .container {
+            max-width: 960px;
+            width: 100%;
+            display: grid;
+            grid-template-columns: repeat(12, 1fr);
+            gap: 2rem;
+        }
+
+        main {
+            grid-column: span 8;
+        }
+
+        aside {
+            grid-column: span 4;
+            font-size: 0.9rem;
+            color: #555;
+        }
+
+        #viewer {
+            width: 900px;
+            height: 500px;
+            border: 2px dashed #ccc;
+            margin-top: 1rem;
+            position: relative;
+        }
+
+        #viewer.dragover {
+            border-color: #e30613;
+        }
+
+        canvas {
+            display: block;
+        }
+
+        .controls {
+            display: flex;
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+
+        .switchLabel {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.9rem;
+        }
+
+        .switch {
+            position: relative;
+            display: inline-block;
+            width: 40px;
+            height: 22px;
+        }
+
+        .switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #ccc;
+            transition: 0.2s;
+            border-radius: 34px;
+        }
+
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 16px;
+            width: 16px;
+            left: 3px;
+            bottom: 3px;
+            background-color: white;
+            transition: 0.2s;
+            border-radius: 50%;
+        }
+
+        input:checked+.slider {
+            background-color: #4caf50;
+        }
+
+        input:checked+.slider:before {
+            transform: translateX(18px);
+        }
+
+        label {
+            font-size: 0.9rem;
+        }
+
+        footer {
+            grid-column: span 12;
+            margin-top: 4rem;
+            border-top: 1px solid #ccc;
+            padding-top: 1rem;
+            font-size: 0.8rem;
+            color: #999;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <header>
+            <h1>Luke Boppart</h1>
+            <p>Engineer | Additive Manufacturing | Software & Slicers</p>
+            <nav style="grid-column: span 12; margin-bottom: 2rem;">
+                <a href="index.html">Home</a> |
+                <a href="fun.html">Fun</a>
+            </nav>
+            <h1>Physics Bucket STL Viewer</h1>
+        </header>
+
+        <main>
+            <div class="controls" style="grid-column: span 12; margin-bottom: 2rem;">
+                <label>Width: <input id="widthSlider" type="range" min="10" max="600" value="160" /></label>
+                <label>Depth: <input id="depthSlider" type="range" min="10" max="600" value="160" /></label>
+                <label>Height: <input id="heightSlider" type="range" min="5" max="1000" value="300" /></label>
+                <button id="exportBtn">Export Scene STL</button>
+            </div>
+            <label class="switchLabel">
+                Physics:
+                <label class="switch">
+                    <input type="checkbox" id="togglePhysicsCheckbox" checked>
+                    <span class="slider round"></span>
+                </label>
+            </label>
+
+            <div id="viewer"></div>
+        </main>
+
+        <div></div>
+
+        <aside>
+            <p>Drag and drop your .stl into the bucket. Click and drag objects to interact.</p>
+        </aside>
+
+        <footer>
+            &copy; 2025 Luke Boppart. Built with simplicity in mind.
+        </footer>
+    </div>
+
+    <script type="importmap">
+    {
+      "imports": {
+        "three": "https://cdn.jsdelivr.net/npm/three@0.157.0/build/three.module.js",
+        "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.157.0/examples/jsm/",
+        "three/utils/": "https://cdn.jsdelivr.net/npm/three@0.157.0/examples/jsm/utils/",
+        "cannon": "https://cdn.jsdelivr.net/npm/cannon-es@0.20.0/dist/cannon-es.js"
+      }
+    }
+    </script>
+
+    <script type="module">
+        import * as THREE from 'three';
+        import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
+        import { STLLoader } from 'three/addons/loaders/STLLoader.js';
+        import { STLExporter } from 'three/addons/exporters/STLExporter.js'
+        import * as BufferGeometryUtils from 'three/utils/BufferGeometryUtils.js'
+        import * as CANNON from 'cannon';
+
+        const container = document.getElementById('viewer');
+        const widthSlider = document.getElementById('widthSlider');
+        const depthSlider = document.getElementById('depthSlider');
+        const heightSlider = document.getElementById('heightSlider');
+        const exportBtn = document.getElementById('exportBtn');
+        const togglePhysicsCheckbox = document.getElementById('togglePhysicsCheckbox');
+
+        const scene = new THREE.Scene();
+        const camera = new THREE.PerspectiveCamera(60, container.clientWidth / container.clientHeight, 0.1, 1000);
+        const renderer = new THREE.WebGLRenderer({ antialias: true });
+        renderer.setSize(container.clientWidth, container.clientHeight);
+        container.appendChild(renderer.domElement);
+
+        const controls = new OrbitControls(camera, renderer.domElement);
+        camera.position.set(0, 550, 275);
+        controls.update();
+
+        const light = new THREE.HemisphereLight(0xffffff, 0x444444);
+        scene.add(light);
+
+        const world = new CANNON.World({ gravity: new CANNON.Vec3(0, -98.2, 0) });
+
+        let physicsEnabled = togglePhysicsCheckbox.checked;
+        let selectedBody = null;
+        let dragPlane = null;
+        let groundBody = null;
+        let groundMesh = null;
+        let lidBody = null;
+        let lidMesh = null;
+        let wallMeshes = [];
+        let wallBodies = [];
+
+        const physicsObjects = [];
+        const mouse = new THREE.Vector2();
+        const raycaster = new THREE.Raycaster();
+        let dragPointOffset = new THREE.Vector3();
+
+        [widthSlider, depthSlider, heightSlider].forEach(slider => {
+            slider.addEventListener('input', () => {
+                const w = +widthSlider.value;
+                const d = +depthSlider.value;
+                const h = +heightSlider.value;
+                createWalls(w, d, h);
+            });
+        });
+
+        function createWalls(width, depth, height) {
+            // Remove existing walls and ground
+            wallMeshes.forEach(mesh => scene.remove(mesh));
+            wallBodies.forEach(body => world.removeBody(body));
+            if (groundMesh) scene.remove(groundMesh);
+            if (groundBody) world.removeBody(groundBody);
+            if (lidMesh) scene.remove(lidMesh);
+            if (lidBody) world.removeBody(lidBody);
+            wallMeshes = [];
+            wallBodies = [];
+
+            // Ground (visual + physics)
+            const groundGeo = new THREE.PlaneGeometry(width, depth);
+            const groundMat = new THREE.MeshStandardMaterial({ color: 0xcccccf });
+            groundMesh = new THREE.Mesh(groundGeo, groundMat);
+            groundMesh.rotation.x = -Math.PI / 2;
+            scene.add(groundMesh);
+
+            const groundShape = new CANNON.Plane();
+            groundBody = new CANNON.Body({ mass: 0 });
+            groundBody.addShape(groundShape);
+            groundBody.quaternion.setFromEuler(-Math.PI / 2, 0, 0);
+            world.addBody(groundBody);
+
+            const wallDefs = [
+                { pos: [0, height / 2, -depth / 2], rot: [0, 0, 0] },
+                { pos: [0, height / 2, depth / 2], rot: [0, Math.PI, 0] },
+                { pos: [-width / 2, height / 2, 0], rot: [0, Math.PI / 2, 0] },
+                { pos: [width / 2, height / 2, 0], rot: [0, -Math.PI / 2, 0] },
+            ];
+
+            wallDefs.forEach(({ pos, rot }, index) => {
+                const wallBody = new CANNON.Body({ mass: 0 });
+                wallBody.addShape(new CANNON.Plane());
+                wallBody.position.set(...pos);
+                wallBody.quaternion.setFromEuler(...rot);
+                world.addBody(wallBody);
+                wallBodies.push(wallBody);
+
+                const geo = new THREE.PlaneGeometry(index < 2 ? width : depth, height);
+                const mat = new THREE.MeshStandardMaterial({
+                    color: 0xdddddd,
+                    transparent: index === 1,
+
+                });
+                const mesh = new THREE.Mesh(geo, mat);
+                mesh.position.set(...pos);
+                mesh.rotation.set(...rot);
+                scene.add(mesh);
+                wallMeshes.push(mesh);
+            });
+
+            // Lid (invisible)
+            const lidShape = new CANNON.Plane();
+            lidBody = new CANNON.Body({ mass: 0 });
+            lidBody.addShape(lidShape);
+            lidBody.quaternion.setFromEuler(Math.PI / 2, 0, 0);
+            lidBody.position.set(0, height, 0);
+            world.addBody(lidBody);
+
+            const lidGeo = new THREE.PlaneGeometry(width, depth);
+            const lidMat = new THREE.MeshBasicMaterial({ visible: false });
+            lidMesh = new THREE.Mesh(lidGeo, lidMat);
+            lidMesh.rotation.x = Math.PI / 2;
+            lidMesh.position.set(0, height, 0);
+            scene.add(lidMesh);
+        }
+
+        function createBoxShapeFromGeometry(geometry) {
+            geometry.computeBoundingBox();
+            const box = geometry.boundingBox;
+            const size = new THREE.Vector3();
+            box.getSize(size);
+            return new CANNON.Box(new CANNON.Vec3(size.x / 2, size.y / 2, size.z / 2));
+        }
+
+        function loadSTL(blob) {
+            const loader = new STLLoader();
+            const reader = new FileReader();
+            reader.onload = function (e) {
+                const geometry = loader.parse(e.target.result);
+                geometry.rotateX(-Math.PI / 2);  // Align STL's Z-up to Y-up
+                geometry.computeBoundingBox();
+
+                const size = new THREE.Vector3();
+                geometry.boundingBox.getSize(size);
+                const center = new THREE.Vector3();
+                geometry.boundingBox.getCenter(center);
+                geometry.translate(-center.x, -center.y, -center.z);
+
+                const scale = 1;
+                geometry.scale(scale, scale, scale);
+
+                const material = new THREE.MeshNormalMaterial();
+                const mesh = new THREE.Mesh(geometry, material);
+                scene.add(mesh);
+
+                const shape = createBoxShapeFromGeometry(geometry);
+                const body = new CANNON.Body({ mass: 1 });
+                body.addShape(shape);
+                body.position.set((Math.random() - 0.5) * 5, 10, (Math.random() - 0.5) * 5);
+                world.addBody(body);
+
+                physicsObjects.push({ mesh, body });
+            };
+            reader.readAsArrayBuffer(blob);
+        }
+
+        function animate() {
+            requestAnimationFrame(animate);
+
+            if (physicsEnabled) {
+                world.step(1 / 60);
+
+                for (const { mesh, body } of physicsObjects) {
+                    mesh.position.copy(body.position);
+                    mesh.quaternion.copy(body.quaternion);
+                }
+            }
+
+            controls.update();
+            renderer.render(scene, camera);
+        }
+
+        function getMouseRayIntersection(e, plane) {
+            const rect = container.getBoundingClientRect();
+            mouse.x = ((e.clientX - rect.left) / container.clientWidth) * 2 - 1;
+            mouse.y = -((e.clientY - rect.top) / container.clientHeight) * 2 + 1;
+            raycaster.setFromCamera(mouse, camera);
+            const point = new THREE.Vector3();
+            raycaster.ray.intersectPlane(plane, point);
+            return point;
+        }
+
+        exportBtn.addEventListener('click', () => {
+            const exporter = new STLExporter();
+            const geometries = [];
+            const importedMeshes = new Set();
+            // collect only user-loaded meshes
+            world.bodies.forEach(body => {
+                if (body.shapes.length && body.shapes[0] instanceof CANNON.Box) {
+                    const mesh = scene.children.find(obj => obj.isMesh && obj.geometry && obj.position.equals(body.position));
+                    if (mesh) importedMeshes.add(mesh);
+                }
+            });
+
+            scene.traverse(obj => {
+                if (obj.isMesh && obj.geometry) {
+                    const cloned = obj.geometry.clone();
+                    obj.updateMatrix();
+                    cloned.applyMatrix4(obj.matrix);
+                    if (importedMeshes.has(obj)) geometries.push(cloned);
+                }
+            });
+            const merged = BufferGeometryUtils.mergeGeometries(geometries, false);
+            const meshForExport = new THREE.Mesh(merged);
+            meshForExport.rotation.x = Math.PI / 2;
+            meshForExport.updateMatrixWorld(true);
+            merged.rotateX(Math.PI / 2);
+            const result = exporter.parse(new THREE.Mesh(merged));
+            const blob = new Blob([result], { type: 'text/plain' });
+            const link = document.createElement('a');
+            link.href = URL.createObjectURL(blob);
+            link.download = 'scene.stl';
+            link.click();
+        });
+
+        togglePhysicsCheckbox.addEventListener('click', () => {
+            physicsEnabled = togglePhysicsCheckbox.checked;
+        });
+
+        // Drag-and-drop
+        container.addEventListener('dragover', e => {
+            e.preventDefault();
+            container.classList.add('dragover');
+        });
+        container.addEventListener('dragleave', e => {
+            e.preventDefault();
+            container.classList.remove('dragover');
+        });
+        container.addEventListener('drop', e => {
+            e.preventDefault();
+            container.classList.remove('dragover');
+            const file = e.dataTransfer.files[0];
+            if (file && file.name.toLowerCase().endsWith('.stl')) {
+                loadSTL(file);
+            }
+        });
+
+        // Physics Drag
+        container.addEventListener('mousedown', e => {
+            const rect = container.getBoundingClientRect();
+            mouse.x = ((e.clientX - rect.left) / container.clientWidth) * 2 - 1;
+            mouse.y = -((e.clientY - rect.top) / container.clientHeight) * 2 + 1;
+            raycaster.setFromCamera(mouse, camera);
+
+            const intersects = raycaster.intersectObjects(physicsObjects.map(o => o.mesh));
+            if (intersects.length > 0) {
+                const intersect = intersects[0];
+                const picked = physicsObjects.find(o => o.mesh === intersect.object);
+                if (picked) {
+                    selectedBody = picked.body;
+                    selectedBody.type = CANNON.Body.KINEMATIC;
+                    selectedBody.velocity.set(0, 0, 0);
+                    controls.enabled = false;
+
+                    const planeNormal = camera.getWorldDirection(new THREE.Vector3()).normalize();
+                    dragPlane = new THREE.Plane().setFromNormalAndCoplanarPoint(planeNormal, intersect.point);
+                    dragPointOffset.copy(intersect.point).sub(selectedBody.position);
+                }
+            }
+        });
+        container.addEventListener('mousemove', e => {
+            if (!selectedBody || !dragPlane) return;
+            const point = getMouseRayIntersection(e, dragPlane);
+            point.sub(dragPointOffset);
+            if (point.y < 0.5) point.y = 0.5;
+            selectedBody.position.copy(point);
+        });
+        container.addEventListener('mouseup', () => {
+            if (selectedBody) {
+                selectedBody.type = CANNON.Body.DYNAMIC;
+                selectedBody.velocity.setZero();
+                selectedBody.angularVelocity.setZero();
+                selectedBody = null;
+                dragPlane = null;
+                controls.enabled = true;
+            }
+        });
+
+        createWalls(160, 160, 300);
+        animate();
+
+    </script>
+</body>
+
+</html>
