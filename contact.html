@@ -3,7 +3,7 @@
 
 <head>
     <meta charset="UTF-8">
-    <title>Gallery – Luke Boppart</title>
+    <title>Contact – Luke Boppart</title>
     <style>
         :root {
             --font-main: 'Helvetica Neue', Helvetica, Arial, sans-serif;
@@ -86,6 +86,38 @@
             box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
         }
 
+        .contact-links {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1.5rem;
+            justify-content: center;
+            margin-top: 2rem;
+        }
+
+        .contact-link {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 1.1rem;
+            text-decoration: none;
+            color: #333;
+            background: #fff;
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .contact-link:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+        }
+
+        .contact-link img {
+            height: 24px;
+            width: 24px;
+        }
+
         footer {
             grid-column: span 12;
             margin-top: 4rem;
@@ -108,24 +140,28 @@
                 <a href="gallery.html">Gallery</a> |
                 <a href="contact.html">Contact</a>
             </nav>
-            <h2>Photo Gallery</h2>
+            <h2>Contact</h2>
         </header>
         <main>
-            <div class="grid">
-                <img src="assets/images/IMG_0461.png">
-                <img src="assets/images/IMG_0448.png">
-                <img src="assets/images/IMG_0535.png">
-                <img src="assets/images/IMG_2350.png">
-                <img src="assets/images/IMG_2688.png" alt="Banana for scale">
-                <img src="assets/images/IMG_2357.PNG" alt="Plant Honey">
-                <img src="assets/images/IMG_3123.PNG" alt="Skelly">
-                <img src="assets/images/IMG_3124.PNG" alt="Stretch Honey">
-                <img src="assets/images/IMG_2982.png" alt="City Scape">
-                <img src="assets/images/IMG_0113.png" alt="Book Honey">
-                <img src="assets/images/IMG_3524.png" alt="3D printed toys">
-
-                <!-- Add more as needed -->
+            <div class="contact-links">
+                <a href="https://github.com/lukewarm-h2o" target="_blank" class="contact-link">
+                    <img src="assets/icons/github.svg" alt="GitHub" />
+                    GitHub
+                </a>
+                <a href="https://linkedin.com/in/luke-boppart-592302190/" target="_blank" class="contact-link">
+                    <img src="assets/icons/linkedin.svg" alt="LinkedIn" />
+                    LinkedIn
+                </a>
+                <a href="mailto:luke.boppart@formlabs.com" target="_blank" class="contact-link">
+                    <img src="assets/icons/email.svg" alt="Email" />
+                    Email Me (work)
+                </a>
+                <a href="https://youtube.com/@lukeboppart5860" target="_blank" class="contact-link">
+                    <img src="assets/icons/youtube.svg" alt="YouTube" />
+                    YouTube
+                </a>
             </div>
+
         </main>
         <footer>
             &copy; 2025 Luke Boppart. Built with love †.
