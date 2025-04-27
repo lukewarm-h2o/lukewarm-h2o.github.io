@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Luke Boppart — News</title>
+    <link rel="stylesheet" href="css/styles.css">
+    <style>
+        .content-section {
+            margin-bottom: 3rem;
+        }
+
+        .content-section h2 {
+            font-size: 1.75rem;
+            margin-bottom: 1rem;
+            border-bottom: 2px solid #eee;
+            padding-bottom: 0.5rem;
+        }
+
+        .news-scroller {
+            display: flex;
+            overflow-x: auto;
+            scroll-snap-type: x proximity;
+            scroll-behavior: smooth;
+            gap: 1rem;
+            padding-bottom: 1rem;
+        }
+
+        .news-scroller::-webkit-scrollbar {
+            height: 6px;
+        }
+
+        .news-scroller::-webkit-scrollbar-thumb {
+            background: var(--color-accent);
+            border-radius: 3px;
+        }
+
+        .news-card {
+            flex: 0 0 220px;
+            scroll-snap-align: start;
+            background: #fff;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.08);
+            padding: 0.75rem;
+            display: flex;
+            flex-direction: column;
+            text-decoration: none;
+            color: inherit;
+        }
+
+        .news-card img {
+            width: 100%;
+            height: auto;
+            border-radius: 4px;
+            margin-bottom: 0.5rem;
+        }
+
+        .news-card h4 {
+            font-size: 1rem;
+            margin: 0 0 0.5rem;
+        }
+
+        .news-card p {
+            font-size: 0.85rem;
+            color: #555;
+            flex-grow: 1;
+            margin-bottom: 0.5rem;
+        }
+
+        .news-card .read-more {
+            font-size: 0.85rem;
+            text-align: right;
+            margin-top: auto;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <header id="header-placeholder"></header>
+
+        <main>
+            <section id="news" class="content-section">
+                <h2>News</h2>
+                <div class="news-scroller"></div>
+            </section>
+
+            <section id="interests" class="content-section">
+                <h2>Interests</h2>
+                <div class="news-scroller"></div>
+            </section>
+
+            <section id="watching" class="content-section">
+                <h2>Projects I’m Watching</h2>
+                <div class="news-scroller"></div>
+            </section>
+
+            <section id="fun" class="content-section">
+                <h2>Fun</h2>
+                <div class="news-scroller"></div>
+            </section>
+
+        </main>
+
+        <footer>
+            &copy; 2025 Luke Boppart. Built with love †.
+        </footer>
+
+        <script>
+            fetch('/partials/header.html')
+                .then(res => res.text())
+                .then(html => {
+                    document
+                        .getElementById('header-placeholder')
+                        .innerHTML = html;
+                });
+
+            // Enable scrolling for all .news-scroller elements
+            document.querySelectorAll('.news-scroller').forEach(scroller => {
+                scroller.addEventListener('wheel', handleHorizontalScroll, { passive: false });
+            });
+
+            // Function to handle smooth horizontal scrolling
+            function handleHorizontalScroll(event) {
+                event.preventDefault();
+                event.stopPropagation(); // Prevent the event from propagating to parent elements
+                event.currentTarget.scrollBy({ left: event.deltaY, behavior: 'smooth' });
+            }
+        </script>
+
+        <script>
+            // 1) fetch the JSON file
+            fetch('/data/articles.json')
+                .then(res => {
+                    if (!res.ok) throw new Error(`HTTP ${res.status}`);
+                    return res.json();
+                })
+                .then(sectionsData => {
+                    // Iterate over each section in the JSON object
+                    Object.entries(sectionsData).forEach(([sectionId, articles]) => {
+                        const container = document
+                            .getElementById(sectionId)
+                            .querySelector('.news-scroller');
+
+                        // Create and append a card for each article
+                        articles.forEach(article => {
+                            const card = document.createElement('a');
+                            card.className = 'news-card';
+                            card.href = article.link;
+                            card.target = '_blank';
+                            card.innerHTML = `
+                                <img src="${article.img}" alt="${article.title}">
+                                <h4>${article.title}</h4>
+                                <p>${article.snippet}</p>
+                                <span class="read-more">Read more →</span>
+                            `;
+                            container.appendChild(card);
+                        });
+
+                        // Add smooth horizontal scrolling on wheel events
+                        container.addEventListener('wheel', handleHorizontalScroll, { passive: false });
+                    });
+                });
+        </script>
+    </div>
+</body>
+
+</html>

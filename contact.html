@@ -4,73 +4,8 @@
 <head>
     <meta charset="UTF-8">
     <title>Contact – Luke Boppart</title>
+    <link rel="stylesheet" href="css/styles.css">
     <style>
-        :root {
-            --font-main: 'Helvetica Neue', Helvetica, Arial, sans-serif;
-            --color-bg: #fff;
-            --color-text: #111;
-            --color-accent: #e30613;
-        }
-
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-        }
-
-        body {
-            font-family: var(--font-main);
-            background-color: var(--color-bg);
-            color: var(--color-text);
-            line-height: 1.6;
-            padding: 4rem 2rem;
-            display: flex;
-            justify-content: center;
-        }
-
-        .container {
-            max-width: 960px;
-            width: 100%;
-            display: grid;
-            grid-template-columns: repeat(12, 1fr);
-            gap: 2rem;
-        }
-
-        header {
-            grid-column: span 12;
-            border-bottom: 1px solid #ccc;
-            margin-bottom: 2rem;
-        }
-
-        header h1 {
-            font-size: 2.5rem;
-            font-weight: 600;
-        }
-
-        main {
-            grid-column: span 8;
-        }
-
-        aside {
-            grid-column: span 4;
-            font-size: 0.9rem;
-            color: #555;
-        }
-
-        a {
-            color: var(--color-accent);
-            text-decoration: none;
-        }
-
-        a:hover {
-            text-decoration: underline;
-        }
-
-        nav a {
-            text-decoration: none;
-            color: #e30613;
-        }
-
         .grid {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
@@ -117,37 +52,14 @@
             height: 24px;
             width: 24px;
         }
-
-        footer {
-            grid-column: span 12;
-            margin-top: 4rem;
-            border-top: 1px solid #ccc;
-            padding-top: 1rem;
-            font-size: 0.8rem;
-            color: #999;
-        }
     </style>
 </head>
 
 <body>
     <div class="container">
-        <header>
-            <h1>Luke Boppart</h1>
-            <p>Engineer | Additive Manufacturing | Software & Slicers</p>
-            <nav style="grid-column: span 12; margin-bottom: 2rem;">
-                <a href="index.html">Home</a> |
-                <a href="fun.html">Fun</a> |
-                <a href="gallery.html">Gallery</a> |
-                <a href="contact.html">Contact</a>
-            </nav>
-            <h2>Contact</h2>
-        </header>
+        <header id="header-placeholder"></header>
         <main>
             <div class="contact-links">
-                <a href="https://github.com/lukewarm-h2o" target="_blank" class="contact-link">
-                    <img src="assets/icons/github.svg" alt="GitHub" />
-                    GitHub
-                </a>
                 <a href="https://linkedin.com/in/luke-boppart-592302190/" target="_blank" class="contact-link">
                     <img src="assets/icons/linkedin.svg" alt="LinkedIn" />
                     LinkedIn
@@ -155,6 +67,10 @@
                 <a href="mailto:luke.boppart@formlabs.com" target="_blank" class="contact-link">
                     <img src="assets/icons/email.svg" alt="Email" />
                     Email Me (work)
+                </a>
+                <a href="https://github.com/lukewarm-h2o" target="_blank" class="contact-link">
+                    <img src="assets/icons/github.svg" alt="GitHub" />
+                    GitHub
                 </a>
                 <a href="https://youtube.com/@lukeboppart5860" target="_blank" class="contact-link">
                     <img src="assets/icons/youtube.svg" alt="YouTube" />
@@ -166,6 +82,15 @@
         <footer>
             &copy; 2025 Luke Boppart. Built with love †.
         </footer>
+        <script>
+            fetch('/partials/header.html')
+              .then(res => res.text())
+              .then(html => {
+                document
+                  .getElementById('header-placeholder')
+                  .innerHTML = html;
+              });
+          </script>
     </div>
 </body>
 

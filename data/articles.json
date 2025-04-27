@@ -1,0 +1,65 @@
+{
+    "news": [
+
+        {
+            "link": "https://formlabs.com/blog/dashboard-firmware-updates/?srsltid=AfmBOoobQkHozDRYn_GWWctL7FYDvIvsDw7IwewiwrIT5PAeosrFSkyi",
+            "img": "https://s3.amazonaws.com/servicecloudassets.formlabs.com/media/Fuse%201/Printing%20With%20The%20Fuse%201/Uploading%20and%20confirming%20a%20print%20%28SLS%29/upload-confirm-print-add-to-running-job-toggle.png",
+            "title": "New Software & Firmware Updates Streamline Efficiency",
+            "snippet": "The latest software and firmware updates have been developed to streamline workflows, increase efficiency..."
+        },
+        {
+            "link": "https://techcrunch.com/2024/07/11/formlabs-acquires-3d-printing-startup-micronics-mid-kickstarter-campaign/",
+            "img": "https://techcrunch.com/wp-content/uploads/2024/07/1c2db5d0967e960fc5dc40543befb5d6_original.jpeg",
+            "title": "Formlabs acquires 3D printing startup Micronics mid-Kickstarter campaign",
+            "snippet": "Formlabs on Thursday announced its acquisition of 3D printing firm Micronics..."
+        },
+        {
+            "link": "https://formlabs.com/blog/formlabs-acquires-micronics/",
+            "img": "https://formlabs.com/_next/image/?url=https%3A%2F%2Fformlabs-media.formlabs.com%2Ffiler_public_thumbnails%2Ffiler_public%2Ff9%2F35%2Ff93567d9-7357-46cb-949a-e1873fcdd885%2Fasset_11.png__1354x0_subsampling-2.png&w=3840&q=75",
+            "title": "Formlabs Acquires Micronics to Develop the Next Generation of Accessible SLS",
+            "snippet": "Today marks an exciting day for Formlabs — we are acquiring Micronics, a 3D printing startup…"
+        },
+        {
+            "link": "https://3dprintingindustry.com/news/micronics-unveils-its-innovative-sls-3d-printer-offering-230956/",
+            "img": "https://3dprintingindustry.com/wp-content/uploads/2019/11/Main-site-logo.png",
+            "title": "Micronics unveils its innovative SLS 3D printer offering",
+            "snippet": "Wisconsin-based 3D printing company Micronics has announced its new Micron desktop Selective Laser Sintering (SLS) 3D printer. Priced at $2999..."
+        },
+        {
+            "link": "https://www.tomshardware.com/3d-printing/micronics-sls-3d-printer-aims-to-take-sls-mainstream-boasts-a-desktop-form-factor-and-a-relatively-low-dollar2999-price",
+            "img": "https://cdn.mos.cms.futurecdn.net/gPiM37WiUDgZbGo6ej3vUR-970-80.png.webp",
+            "title": "Micronics SLS 3D printer aims to take SLS mainstream",
+            "snippet": "SLS 3D printers are on the high end of 3D printers and frequently priced at five or ten thousand dollars"
+        },
+        {
+            "link": "info.html",
+            "img": "/assets/images/default.png",
+            "title": "",
+            "snippet": ""
+        }
+    ],
+    "interests": [
+        {
+            "link": "",
+            "img": "",
+            "title": "",
+            "snippet": ""
+        }
+    ],
+    "watching": [
+        {
+            "link": "",
+            "img": "",
+            "title": "",
+            "snippet": ""
+        }
+    ],
+    "fun": [
+        {
+            "link": "",
+            "img": "",
+            "title": "",
+            "snippet": ""
+        }
+    ]
+}

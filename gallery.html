@@ -4,73 +4,8 @@
 <head>
     <meta charset="UTF-8">
     <title>Gallery – Luke Boppart</title>
+    <link rel="stylesheet" href="css/styles.css">
     <style>
-        :root {
-            --font-main: 'Helvetica Neue', Helvetica, Arial, sans-serif;
-            --color-bg: #fff;
-            --color-text: #111;
-            --color-accent: #e30613;
-        }
-
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-        }
-
-        body {
-            font-family: var(--font-main);
-            background-color: var(--color-bg);
-            color: var(--color-text);
-            line-height: 1.6;
-            padding: 4rem 2rem;
-            display: flex;
-            justify-content: center;
-        }
-
-        .container {
-            max-width: 960px;
-            width: 100%;
-            display: grid;
-            grid-template-columns: repeat(12, 1fr);
-            gap: 2rem;
-        }
-
-        header {
-            grid-column: span 12;
-            border-bottom: 1px solid #ccc;
-            margin-bottom: 2rem;
-        }
-
-        header h1 {
-            font-size: 2.5rem;
-            font-weight: 600;
-        }
-
-        main {
-            grid-column: span 8;
-        }
-
-        aside {
-            grid-column: span 4;
-            font-size: 0.9rem;
-            color: #555;
-        }
-
-        a {
-            color: var(--color-accent);
-            text-decoration: none;
-        }
-
-        a:hover {
-            text-decoration: underline;
-        }
-
-        nav a {
-            text-decoration: none;
-            color: #e30613;
-        }
-
         .grid {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
@@ -86,30 +21,58 @@
             box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
         }
 
-        footer {
-            grid-column: span 12;
-            margin-top: 4rem;
-            border-top: 1px solid #ccc;
-            padding-top: 1rem;
-            font-size: 0.8rem;
-            color: #999;
+        /* Lightbox modal styles */
+        .lightbox {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+
+        .lightbox img {
+            max-width: 90%;
+            max-height: 80%;
+            border-radius: 8px;
+        }
+
+        .lightbox .controls {
+            position: absolute;
+            top: 50%;
+            width: 100%;
+            display: flex;
+            justify-content: space-between;
+            transform: translateY(-50%);
+        }
+
+        .lightbox .controls button {
+            background: none;
+            border: none;
+            color: white;
+            font-size: 2rem;
+            cursor: pointer;
+            padding: 0 1rem;
+        }
+
+        .lightbox .close {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            font-size: 2rem;
+            color: white;
+            cursor: pointer;
         }
     </style>
 </head>
 
 <body>
     <div class="container">
-        <header>
-            <h1>Luke Boppart</h1>
-            <p>Engineer | Additive Manufacturing | Software & Slicers</p>
-            <nav style="grid-column: span 12; margin-bottom: 2rem;">
-                <a href="index.html">Home</a> |
-                <a href="fun.html">Fun</a> |
-                <a href="gallery.html">Gallery</a> |
-                <a href="contact.html">Contact</a>
-            </nav>
-            <h2>Photo Gallery</h2>
-        </header>
+        <header id="header-placeholder"></header>
         <main>
             <div class="grid">
                 <img src="assets/images/IMG_0461.png">
@@ -126,10 +89,70 @@
 
                 <!-- Add more as needed -->
             </div>
+
+            <!-- Lightbox modal -->
+            <div class="lightbox" id="lightbox">
+                <span class="close" id="close-lightbox">&times;</span>
+                <img id="lightbox-img" src="" alt="">
+                <div class="controls">
+                    <button id="prev-btn">&lt;</button>
+                    <button id="next-btn">&gt;</button>
+                </div>
+            </div>
         </main>
         <footer>
             &copy; 2025 Luke Boppart. Built with love †.
         </footer>
+        <script>
+            fetch('/partials/header.html')
+              .then(res => res.text())
+              .then(html => {
+                document
+                  .getElementById('header-placeholder')
+                  .innerHTML = html;
+              });
+
+            const images = document.querySelectorAll('.grid img');
+            const lightbox = document.getElementById('lightbox');
+            const lightboxImg = document.getElementById('lightbox-img');
+            const closeLightbox = document.getElementById('close-lightbox');
+            const prevBtn = document.getElementById('prev-btn');
+            const nextBtn = document.getElementById('next-btn');
+            let currentIndex = 0;
+
+            // Open lightbox
+            images.forEach((img, index) => {
+                img.addEventListener('click', () => {
+                    currentIndex = index;
+                    lightboxImg.src = img.src;
+                    lightbox.style.display = 'flex';
+                });
+            });
+
+            // Close lightbox
+            closeLightbox.addEventListener('click', () => {
+                lightbox.style.display = 'none';
+            });
+
+            // Show previous image
+            prevBtn.addEventListener('click', () => {
+                currentIndex = (currentIndex - 1 + images.length) % images.length;
+                lightboxImg.src = images[currentIndex].src;
+            });
+
+            // Show next image
+            nextBtn.addEventListener('click', () => {
+                currentIndex = (currentIndex + 1) % images.length;
+                lightboxImg.src = images[currentIndex].src;
+            });
+
+            // Close lightbox on outside click
+            lightbox.addEventListener('click', (e) => {
+                if (e.target === lightbox) {
+                    lightbox.style.display = 'none';
+                }
+            });
+        </script>
     </div>
 </body>
 

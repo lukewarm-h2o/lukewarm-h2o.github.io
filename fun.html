@@ -5,64 +5,8 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>3D Physics Bucket – Drop STL</title>
+    <link rel="stylesheet" href="css/styles.css">
     <style>
-        :root {
-            --font-main: 'Helvetica Neue', Helvetica, Arial, sans-serif;
-            --color-bg: #fff;
-            --color-text: #111;
-            --color-accent: #e30613;
-        }
-
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-        }
-
-        header {
-            grid-column: span 12;
-            border-bottom: 1px solid #ccc;
-            margin-bottom: 2rem;
-        }
-
-        header h1 {
-            font-size: 2.5rem;
-            font-weight: 600;
-        }
-
-        body {
-            font-family: var(--font-main);
-            background-color: var(--color-bg);
-            color: var(--color-text);
-            line-height: 1.6;
-            padding: 4rem 2rem;
-            display: flex;
-            justify-content: center;
-        }
-
-        .container {
-            max-width: 960px;
-            width: 100%;
-            display: grid;
-            grid-template-columns: repeat(12, 1fr);
-            gap: 2rem;
-        }
-
-        main {
-            grid-column: span 8;
-        }
-
-        aside {
-            grid-column: span 4;
-            font-size: 0.9rem;
-            color: #555;
-        }
-
-        a {
-            color: var(--color-accent);
-            text-decoration: none;
-        }
-
         #viewer {
             width: 900px;
             height: 500px;
@@ -140,31 +84,12 @@
         label {
             font-size: 0.9rem;
         }
-
-        footer {
-            grid-column: span 12;
-            margin-top: 4rem;
-            border-top: 1px solid #ccc;
-            padding-top: 1rem;
-            font-size: 0.8rem;
-            color: #999;
-        }
     </style>
 </head>
 
 <body>
     <div class="container">
-        <header>
-            <h1>Luke Boppart</h1>
-            <p>Engineer | Additive Manufacturing | Software & Slicers</p>
-            <nav style="grid-column: span 12; margin-bottom: 2rem;">
-                <a href="index.html">Home</a> |
-                <a href="fun.html">Fun</a> |
-                <a href="gallery.html">Gallery</a> |
-                <a href="contact.html">Contact</a>
-            </nav>
-            <h2>Physics Bucket STL Viewer</h2>
-        </header>
+        <header id="header-placeholder"></header>
 
         <main>
             <div class="controls" style="grid-column: span 12; margin-bottom: 2rem;">
@@ -172,6 +97,9 @@
                 <label>Depth: <input id="depthSlider" type="range" min="10" max="600" value="160" /></label>
                 <label>Height: <input id="heightSlider" type="range" min="5" max="1000" value="300" /></label>
                 <button id="exportBtn">Export Scene STL</button>
+                <input id="fileInput" type="file" accept=".stl" multiple style="display:none;" />
+                <button id="importBtn">Import STL...</button>
+                <button id="randomPackBtn">Random Pack</button>
             </div>
             <label class="switchLabel">
                 Physics:
@@ -193,6 +121,15 @@
         <footer>
             &copy; 2025 Luke Boppart. Built with love †.
         </footer>
+        <script>
+            fetch('/partials/header.html')
+                .then(res => res.text())
+                .then(html => {
+                    document
+                        .getElementById('header-placeholder')
+                        .innerHTML = html;
+                });
+        </script>
     </div>
 
     <script type="importmap">
@@ -219,6 +156,10 @@
         const depthSlider = document.getElementById('depthSlider');
         const heightSlider = document.getElementById('heightSlider');
         const exportBtn = document.getElementById('exportBtn');
+        const fileInput = document.getElementById('fileInput');
+        const importBtn = document.getElementById('importBtn');
+        const randomPackBtn = document.getElementById('randomPackBtn');
+
         const togglePhysicsCheckbox = document.getElementById('togglePhysicsCheckbox');
 
         const scene = new THREE.Scene();
@@ -394,6 +335,16 @@
             return point;
         }
 
+        importBtn.addEventListener('click', () => fileInput.click());
+
+        fileInput.addEventListener('change', (e) => {
+            Array.from(e.target.files)
+                .filter(file => file.name.toLowerCase().endsWith('.stl'))
+                .forEach(file => loadSTL(file));
+            // clear the selection so the same file can be re-picked if needed
+            e.target.value = '';
+        });
+
         exportBtn.addEventListener('click', () => {
             const exporter = new STLExporter();
             const geometries = [];
@@ -414,7 +365,19 @@
                     if (importedMeshes.has(obj)) geometries.push(cloned);
                 }
             });
+
+            if (geometries.length === 0) {
+                alert('No meshes to export – load at least one .stl first.');
+                return;
+            }
+            const normalized = geometries.map(g =>
+                g.index ? g.toNonIndexed() : g
+            );
             const merged = BufferGeometryUtils.mergeGeometries(geometries, false);
+            if (!merged) {
+                console.warn('Failed to merge geometries – check that you have at least one geometry, and that they all share the same attributes.');
+                return;
+            }
             const meshForExport = new THREE.Mesh(merged);
             meshForExport.rotation.x = Math.PI / 2;
             meshForExport.updateMatrixWorld(true);
@@ -425,6 +388,31 @@
             link.href = URL.createObjectURL(blob);
             link.download = 'scene.stl';
             link.click();
+        });
+
+        randomPackBtn.addEventListener('click', () => {
+            // grab current bucket dims
+            const w = +widthSlider.value;
+            const d = +depthSlider.value;
+            const h = +heightSlider.value;
+
+            physicsObjects.forEach(({ mesh, body }) => {
+                // random X/Z in bucket footprint
+                const x = (Math.random() - 0.5) * w;
+                const z = (Math.random() - 0.5) * d;
+                // drop them from somewhere up to 80% of bucket height
+                const y = Math.random() * (h * 0.8) + 5;
+                body.position.set(x, y, z);
+                body.velocity.setZero();
+                body.angularVelocity.setZero();
+
+                // optional: random orientation
+                body.quaternion.setFromEuler(
+                    Math.random() * Math.PI,
+                    Math.random() * Math.PI,
+                    Math.random() * Math.PI
+                );
+            });
         });
 
         togglePhysicsCheckbox.addEventListener('click', () => {

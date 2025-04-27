@@ -5,91 +5,12 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Luke Boppart — Engineer</title>
-  <style>
-    :root {
-      --font-main: 'Helvetica Neue', Helvetica, Arial, sans-serif;
-      --color-bg: #fff;
-      --color-text: #111;
-      --color-accent: #e30613;
-    }
-
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-    }
-
-    body {
-      font-family: var(--font-main);
-      background-color: var(--color-bg);
-      color: var(--color-text);
-      line-height: 1.6;
-      padding: 4rem 2rem;
-      display: flex;
-      justify-content: center;
-    }
-
-    .container {
-      max-width: 960px;
-      width: 100%;
-      display: grid;
-      grid-template-columns: repeat(12, 1fr);
-      gap: 2rem;
-    }
-
-    header {
-      grid-column: span 12;
-      border-bottom: 1px solid #ccc;
-      margin-bottom: 2rem;
-    }
-
-    header h1 {
-      font-size: 2.5rem;
-      font-weight: 600;
-    }
-
-    main {
-      grid-column: span 8;
-    }
-
-    aside {
-      grid-column: span 4;
-      font-size: 0.9rem;
-      color: #555;
-    }
-
-    a {
-      color: var(--color-accent);
-      text-decoration: none;
-    }
-
-    a:hover {
-      text-decoration: underline;
-    }
-
-    footer {
-      grid-column: span 12;
-      margin-top: 4rem;
-      border-top: 1px solid #ccc;
-      padding-top: 1rem;
-      font-size: 0.8rem;
-      color: #999;
-    }
-  </style>
+  <link rel="stylesheet" href="css/styles.css">
 </head>
 
 <body>
   <div class="container">
-    <header>
-      <h1>Luke Boppart</h1>
-      <p>Engineer | Additive Manufacturing | Software & Slicers</p>
-      <nav style="grid-column: span 12; margin-bottom: 2rem;">
-        <a href="index.html">Home</a> |
-        <a href="fun.html">Fun</a> |
-        <a href="gallery.html">Gallery</a> |
-        <a href="contact.html">Contact</a>
-      </nav>
-    </header>
+    <header id="header-placeholder"></header>
 
     <main>
       <h2>About</h2>
@@ -107,12 +28,18 @@
         <li>3D slicer architecture and optimization</li>
         <li>Machine control systems and software tooling</li>
       </ul>
-  
+
       <h2>Experience</h2>
       <ul>
         <li>Micronics (2021-2024)</li>
         <li>Formlabs (2024-present)</li>
       </ul>
+
+      <section class="news-section">
+        <h2>Latest News</h2>
+        <div class="news-scroller">
+        </div>
+      </section>
 
       <h2>Contact</h2>
       <p>Feel free to <a href="contact.html">reach out via email</a> to talk shop or collaborate.</p>
@@ -126,7 +53,56 @@
     <footer>
       &copy; 2025 Luke Boppart. Built with love †.
     </footer>
+    <script>
+      // Fetch and load the header content dynamically
+      fetch('/partials/header.html')
+        .then(res => res.text())
+        .then(html => {
+          document
+            .getElementById('header-placeholder')
+            .innerHTML = html;
+        });
+    </script>
   </div>
 </body>
+<script>
+  // Fetch and display the latest news articles
+  fetch('/data/articles.json')
+    .then(response => response.json())
+    .then(data => {
+      const articles = data.news;
+      const scroller = document.querySelector('.news-scroller');
+
+      // Create and append a card for each article
+      articles.forEach(a => {
+        const card = document.createElement('a');
+        card.className = 'news-card';
+        card.href = a.link;
+        card.target = '_blank';
+        card.innerHTML = `
+          <img src="${a.img || 'images/default-image.jpg'}" alt="${a.title}">
+          <h4>${a.title}</h4>
+          <p>${a.snippet}</p>
+          <span class="read-more">Read more →</span>
+        `;
+        scroller.appendChild(card);
+      });
+    })
+    .catch(error => {
+      // Handle errors when fetching articles
+      console.error('Error fetching articles:', error);
+      const scroller = document.querySelector('.news-scroller');
+      scroller.innerHTML = '<p class="fallback-message">Unable to load the latest news. Please try again later.</p>';
+    });
+
+  // Function to handle smooth horizontal scrolling
+  function handleHorizontalScroll(event) {
+    if (event.shiftKey) { // Only enable horizontal scrolling when Shift key is pressed
+      event.preventDefault();
+      event.stopPropagation(); // Prevent the event from propagating to parent elements
+      event.currentTarget.scrollBy({ left: event.deltaY, behavior: 'smooth' });
+    }
+  }
+</script>
 
 </html>
