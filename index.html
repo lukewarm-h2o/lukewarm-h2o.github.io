@@ -5,35 +5,42 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Luke Boppart — Engineer</title>
-  <link rel="stylesheet" href="css/styles.css">
+  <link rel="stylesheet" href="css/styles.css?v=modernmaker-3">
 </head>
 
-<body>
+<body class="home-page">
   <div class="container">
     <header id="header-placeholder"></header>
 
     <main>
-      <h2>About</h2>
-      <p>
-        I’m an engineer specializing in additive manufacturing. My work sits at the intersection of hardware and
-        software —
-        from tuning machines to developing and optimizing 3D slicers. I believe well-designed tools empower better
-        results.
-      </p>
+      <section class="home-section">
+        <p class="eyebrow">Engineer / Additive Manufacturing</p>
+        <h2>About</h2>
+        <p>
+          I’m an engineer specializing in additive manufacturing. My work sits at the intersection of hardware and
+          software —
+          from tuning machines to developing and optimizing 3D slicers. I believe well-designed tools empower better
+          results.
+        </p>
+      </section>
 
-      <h2>Focus Areas</h2>
-      <ul>
-        <li>Selective Laser Sintering (SLS)</li>
-        <li>Physics-based model placement</li>
-        <li>3D slicer architecture and optimization</li>
-        <li>Machine control systems and software tooling</li>
-      </ul>
+      <section class="home-section">
+        <h2>Focus Areas</h2>
+        <ul>
+          <li>Selective Laser Sintering (SLS)</li>
+          <li>Physics-based model placement</li>
+          <li>3D slicer architecture and optimization</li>
+          <li>Machine control systems and software tooling</li>
+        </ul>
+      </section>
 
-      <h2>Experience</h2>
-      <ul>
-        <li>Micronics (2021-2024)</li>
-        <li>Formlabs (2024-present)</li>
-      </ul>
+      <section class="home-section">
+        <h2>Experience</h2>
+        <ul>
+          <li>Micronics (2021-2024)</li>
+          <li>Formlabs (2024-2026)</li>
+        </ul>
+      </section>
 
       <section class="news-section">
         <h2>Latest News</h2>
@@ -41,17 +48,19 @@
         </div>
       </section>
 
-      <h2>Contact</h2>
-      <p>Feel free to <a href="contact.html">reach out via email</a> to talk shop or collaborate.</p>
+      <section class="home-section">
+        <h2>Contact</h2>
+        <p>Feel free to <a href="contact.html">reach out</a> to talk shop or collaborate.</p>
+      </section>
     </main>
 
-    <aside>
+    <aside class="home-aside">
       <h3>Now</h3>
-      <p>Exploring ways to make 3D print prep smarter, faster, and more intuitive through software innovation.</p>
+      <p>On hiatus, exploring the world, and looking for the next grand challenge.</p>
     </aside>
 
     <footer>
-      &copy; 2025 Luke Boppart. Built with love †.
+      &copy; 2026 Luke Boppart. Built with love.
     </footer>
     <script>
       // Fetch and load the header content dynamically
@@ -64,8 +73,7 @@
         });
     </script>
   </div>
-</body>
-<script>
+  <script>
   // Fetch and display the latest news articles
   fetch('/data/articles.json')
     .then(response => response.json())
@@ -103,6 +111,7 @@
       event.currentTarget.scrollBy({ left: event.deltaY, behavior: 'smooth' });
     }
   }
-</script>
+  </script>
+</body>
 
 </html>

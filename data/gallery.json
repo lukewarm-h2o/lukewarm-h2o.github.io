@@ -1,0 +1,297 @@
+{
+  "collections": [
+    {
+      "id": "projects",
+      "name": "Projects",
+      "description": "Printed objects, prototypes, and studio bench details.",
+      "cover": "assets/images/thumbs/IMG_0461.jpg"
+    },
+    {
+      "id": "life",
+      "name": "Life",
+      "description": "Small scenes, pets, plants, and daily texture.",
+      "cover": "assets/images/thumbs/IMG_2357.jpg"
+    },
+    {
+      "id": "new-england",
+      "name": "New England",
+      "description": "Capturing the charm of new england, the sea, the city, and the people",
+      "cover": "assets/images/thumbs/hull-shoreline.jpg"
+    }
+  ],
+  "items": [
+    {
+      "title": "Long Build",
+      "caption": "A wide view from the bench, with the print surface doing most of the talking.",
+      "location": "Workshop",
+      "collection": "projects",
+      "tags": [
+        "print",
+        "bench"
+      ],
+      "src": "assets/images/IMG_0461.png",
+      "thumb": "assets/images/thumbs/IMG_0461.jpg",
+      "alt": "Wide workshop view of a 3D printed part",
+      "width": 4032,
+      "height": 1658
+    },
+    {
+      "title": "Material Study",
+      "caption": "A close look at printed texture and form.",
+      "location": "Workshop",
+      "collection": "projects",
+      "tags": [
+        "print",
+        "texture"
+      ],
+      "src": "assets/images/IMG_0448.png",
+      "thumb": "assets/images/thumbs/IMG_0448.jpg",
+      "alt": "Close view of a 3D printed object",
+      "width": 4032,
+      "height": 3024
+    },
+    {
+      "title": "Escaping the Lab",
+      "caption": "A small test part escapes the lab to rest in nature.",
+      "location": "Workshop",
+      "collection": "projects",
+      "tags": [
+        "print",
+        "prototype"
+      ],
+      "src": "assets/images/IMG_0535.png",
+      "thumb": "assets/images/thumbs/IMG_0535.jpg",
+      "alt": "3D printed object on a workbench",
+      "width": 4032,
+      "height": 3024
+    },
+    {
+      "title": "Clearly stopped mid-print",
+      "caption": "One of my favorite test parts, stopped mid-print to show the layer lines and the clarity",
+      "location": "Workshop",
+      "collection": "projects",
+      "tags": [
+        "object",
+        "print"
+      ],
+      "src": "assets/images/IMG_2350.png",
+      "thumb": "assets/images/thumbs/IMG_2350.jpg",
+      "alt": "Small 3D printed object on a desk",
+      "width": 3072,
+      "height": 2304
+    },
+    {
+      "title": "Banana for Scale",
+      "caption": "The old engineering standard for communicating size with conviction.",
+      "location": "Workshop",
+      "collection": "projects",
+      "tags": [
+        "scale",
+        "print"
+      ],
+      "src": "assets/images/IMG_2688.png",
+      "thumb": "assets/images/thumbs/IMG_2688.jpg",
+      "alt": "3D printed object shown with a banana for scale",
+      "width": 4032,
+      "height": 3024
+    },
+    {
+      "title": "Plant Honey",
+      "caption": "A quiet domestic frame with a plant and a very present subject.",
+      "location": "Home",
+      "collection": "life",
+      "tags": [
+        "home",
+        "portrait"
+      ],
+      "src": "assets/images/IMG_2357.PNG",
+      "thumb": "assets/images/thumbs/IMG_2357.jpg",
+      "alt": "Pet near a houseplant",
+      "width": 1179,
+      "height": 1044
+    },
+    {
+      "title": "Skelly",
+      "caption": "A printed companion rides the Green Line to work with me. Can you tell he's excited for his first train ride?",
+      "location": "Home",
+      "collection": "life",
+      "tags": [
+        "object",
+        "home"
+      ],
+      "src": "assets/images/IMG_3123.PNG",
+      "thumb": "assets/images/thumbs/IMG_3123.jpg",
+      "alt": "Small skeleton object scene",
+      "width": 1179,
+      "height": 1179
+    },
+    {
+      "title": "Stretch Honey",
+      "caption": "Motion, sunlight, and a deep stretch caught mid-frame.",
+      "location": "Home",
+      "collection": "life",
+      "tags": [
+        "home",
+        "portrait"
+      ],
+      "src": "assets/images/IMG_3124.PNG",
+      "thumb": "assets/images/thumbs/IMG_3124.jpg",
+      "alt": "Pet stretching indoors",
+      "width": 1179,
+      "height": 1179
+    },
+    {
+      "title": "City Tile",
+      "caption": "A city tile printed in white nylon, I can see my apartment from here.",
+      "location": "Workshop",
+      "collection": "projects",
+      "tags": [
+        "city",
+        "travel"
+      ],
+      "src": "assets/images/IMG_2982.png",
+      "thumb": "assets/images/thumbs/IMG_2982.jpg",
+      "alt": "Cityscape view",
+      "width": 4032,
+      "height": 3024
+    },
+    {
+      "title": "Book Honey",
+      "caption": "A home scene with books, soft light, and a good subject.",
+      "location": "Home",
+      "collection": "life",
+      "tags": [
+        "home",
+        "books"
+      ],
+      "src": "assets/images/IMG_0113.png",
+      "thumb": "assets/images/thumbs/IMG_0113.jpg",
+      "alt": "Pet near books at home",
+      "width": 4032,
+      "height": 3024
+    },
+    {
+      "title": "Printed Toys",
+      "caption": "A shelf of printed toys. I happy we live in a time where 3D printing is now making its way into your local gas stations.",
+      "location": "Workshop",
+      "collection": "projects",
+      "tags": [
+        "print",
+        "toys"
+      ],
+      "src": "assets/images/IMG_3524.png",
+      "thumb": "assets/images/thumbs/IMG_3524.jpg",
+      "alt": "Collection of 3D printed toys",
+      "width": 4032,
+      "height": 3024
+    },
+    {
+      "title": "Hull Shoreline",
+      "caption": "the boats long for their chance to dip into the cool water and get off the rocky shore",
+      "location": "Hull",
+      "collection": "new-england",
+      "tags": [
+        "beach",
+        "landscape"
+      ],
+      "src": "assets/images/hull-shoreline.jpg",
+      "thumb": "assets/images/thumbs/hull-shoreline.jpg",
+      "alt": "2026 06 20 Dsc01388 Edited",
+      "width": 6880,
+      "height": 4586
+    },
+    {
+      "title": "Camp",
+      "caption": "tucked behid the massive wave-breaking boulders is a small camp. free from watchfull eyes innocent chaos is allowed to burn bright",
+      "location": "Hull",
+      "collection": "new-england",
+      "tags": [
+        "beach",
+        "landscape"
+      ],
+      "src": "assets/images/camp.jpg",
+      "thumb": "assets/images/thumbs/camp.jpg",
+      "alt": "2026 06 20 Dsc01405 Edited",
+      "width": 9504,
+      "height": 6336
+    },
+    {
+      "title": "Boston Light",
+      "caption": "Standing proud in the Boston harbor in various forms since 1716",
+      "location": "Hull",
+      "collection": "new-england",
+      "tags": [
+        "landscape",
+        "sea"
+      ],
+      "src": "assets/images/boston-light.jpg",
+      "thumb": "assets/images/thumbs/boston-light.jpg",
+      "alt": "2026 06 20 Dsc01410 Edited",
+      "width": 8003,
+      "height": 5335
+    },
+    {
+      "title": "The tip of Nantasket",
+      "caption": "Nantaket beach was remarkable for its wide and flat shore. At the Allerton tip it is exceptionaly rocky but that gives way to expansive sandy flats further towards Atlantic",
+      "location": "Hull",
+      "collection": "new-england",
+      "tags": [
+        "landscape",
+        "sea",
+        "beach"
+      ],
+      "src": "assets/images/the-tip-of-nantasket.jpg",
+      "thumb": "assets/images/thumbs/the-tip-of-nantasket.jpg",
+      "alt": "2026 06 20 Dsc01427 Edited",
+      "width": 9504,
+      "height": 6336
+    },
+    {
+      "title": "Sandy Nantasket Flats",
+      "caption": "The wind blows streaks of sand over the wide beach. This may be the best beach I've seen for skimboarding or soccer",
+      "location": "Hull",
+      "collection": "new-england",
+      "tags": [
+        "landscape",
+        "sea",
+        "beach"
+      ],
+      "src": "assets/images/sandy-nantasket-flats.jpg",
+      "thumb": "assets/images/thumbs/sandy-nantasket-flats.jpg",
+      "alt": "2026 06 20 Dsc01437 Edited",
+      "width": 9504,
+      "height": 6336
+    },
+    {
+      "title": "The ghost of Paragon Park",
+      "caption": "Open from 1905 to 1984 Paragon Park was a jewel set on the shore of Nantasket. Fastforward to today this is the cheap copy propped up to quench the lingering thirst for the whimsy of an amusement park.",
+      "location": "Hull",
+      "collection": "new-england",
+      "tags": [
+        "landscape",
+        "sea",
+        "beach"
+      ],
+      "src": "assets/images/the-ghost-of-paragon-park.jpg",
+      "thumb": "assets/images/thumbs/the-ghost-of-paragon-park.jpg",
+      "alt": "2026 06 20 Dsc01444 Edited",
+      "width": 9504,
+      "height": 6336
+    },
+    {
+      "title": "Reflecting on the Greenway",
+      "caption": "I've never known a pre-BigDig Boston, which makes it tough to imagine the city without this snaking green connective tissue that joins together the NorthEnd, Finance-bro-land, and China Town",
+      "location": "Boston",
+      "collection": "new-england",
+      "tags": [
+        "city",
+        "landscape"
+      ],
+      "src": "assets/images/reflecting-on-the-greenway.jpg",
+      "thumb": "assets/images/thumbs/reflecting-on-the-greenway.jpg",
+      "alt": "Dsc01475 Edited",
+      "width": 2454,
+      "height": 4364
+    }
+  ]
+}

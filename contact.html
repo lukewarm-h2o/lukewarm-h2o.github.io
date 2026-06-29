@@ -3,70 +3,25 @@
 
 <head>
     <meta charset="UTF-8">
-    <title>Contact – Luke Boppart</title>
-    <link rel="stylesheet" href="css/styles.css">
-    <style>
-        .grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-            gap: 1rem;
-            margin-top: 2rem;
-        }
-
-        .grid img {
-            width: 100%;
-            height: auto;
-            object-fit: contain;
-            border-radius: 8px;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-        }
-
-        .contact-links {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 1.5rem;
-            justify-content: center;
-            margin-top: 2rem;
-        }
-
-        .contact-link {
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-            font-size: 1.1rem;
-            text-decoration: none;
-            color: #333;
-            background: #fff;
-            padding: 0.5rem 1rem;
-            border-radius: 8px;
-            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
-            transition: transform 0.2s, box-shadow 0.2s;
-        }
-
-        .contact-link:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
-        }
-
-        .contact-link img {
-            height: 24px;
-            width: 24px;
-        }
-    </style>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Contact - Luke Boppart</title>
+  <link rel="stylesheet" href="css/styles.css?v=modernmaker-3">
 </head>
 
-<body>
+<body class="contact-page">
     <div class="container">
         <header id="header-placeholder"></header>
         <main>
+            <section class="page-intro">
+                <p class="eyebrow">Contact</p>
+                <h2>Find me around the web.</h2>
+                <p>Best places to follow projects, photos, and experiments.</p>
+            </section>
+
             <div class="contact-links">
                 <a href="https://linkedin.com/in/luke-boppart-592302190/" target="_blank" class="contact-link">
                     <img src="assets/icons/linkedin.svg" alt="LinkedIn" />
                     LinkedIn
-                </a>
-                <a href="mailto:luke.boppart@formlabs.com" target="_blank" class="contact-link">
-                    <img src="assets/icons/email.svg" alt="Email" />
-                    Email Me (work)
                 </a>
                 <a href="https://github.com/lukewarm-h2o" target="_blank" class="contact-link">
                     <img src="assets/icons/github.svg" alt="GitHub" />
@@ -76,21 +31,24 @@
                     <img src="assets/icons/youtube.svg" alt="YouTube" />
                     YouTube
                 </a>
+                <a href="https://instagram.com/luke_boppart" target="_blank" class="contact-link">
+                    <img src="assets/icons/instagram.svg" alt="Instagram" />
+                    Instagram
+                </a>
             </div>
-
         </main>
         <footer>
-            &copy; 2025 Luke Boppart. Built with love †.
+            &copy; 2026 Luke Boppart. Built with love.
         </footer>
         <script>
             fetch('/partials/header.html')
-              .then(res => res.text())
-              .then(html => {
-                document
-                  .getElementById('header-placeholder')
-                  .innerHTML = html;
-              });
-          </script>
+                .then(res => res.text())
+                .then(html => {
+                    document
+                        .getElementById('header-placeholder')
+                        .innerHTML = html;
+                });
+        </script>
     </div>
 </body>
 

@@ -1,6 +1,17 @@
 {
     "news": [
-
+        {
+            "link": "https://formlabs.com/blog/updated-tough-resins-family/",
+            "img": "https://formlabs.com/_next/image/?url=https%3A%2F%2Fformlabs-media.formlabs.com%2Ffiler_public_thumbnails%2Ffiler_public%2Fd1%2Fe1%2Fd1e107b9-d798-42ed-bcd4-601061877d0e%2Foptimized_for_web_png-10202025_t1000v1_and_t2000v2_whatsnew_082.png__1354x0_q85_subsampling-2.jpg&w=3840&q=75",
+            "title": "Formlabs’ Next-Generation Tough Resins Rival Thermoplastics",
+            "snippet": "Resins for 3D printing have not been able to compete with these superior properties — until today..."
+        },
+        {
+            "link": "https://support.formlabs.com/s/article/Measuring-distances-in-PreForm?language=en_US",
+            "img": "https://us1.discourse-cdn.com/flex025/uploads/formlabs/original/3X/f/7/f798eebeb694f63978dbd09ed3ec63ab2d65f1b6.jpeg",
+            "title": "Measuring distances in PreForm",
+            "snippet": "Starting with PreForm version 3.53.0, you can measure distances between points on a model or between two models within PreForm..."
+        },
         {
             "link": "https://formlabs.com/blog/dashboard-firmware-updates/?srsltid=AfmBOoobQkHozDRYn_GWWctL7FYDvIvsDw7IwewiwrIT5PAeosrFSkyi",
             "img": "https://s3.amazonaws.com/servicecloudassets.formlabs.com/media/Fuse%201/Printing%20With%20The%20Fuse%201/Uploading%20and%20confirming%20a%20print%20%28SLS%29/upload-confirm-print-add-to-running-job-toggle.png",
