@@ -5,7 +5,8 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>3D Physics Bucket – Drop STL</title>
-  <link rel="stylesheet" href="css/styles.css?v=modernmaker-3">
+    <link rel="icon" href="assets/icons/page-icon.svg" type="image/svg+xml">
+    <link rel="stylesheet" href="css/styles.css?v=modernmaker-3">
 </head>
 
 <body class="fun-page">
@@ -29,6 +30,27 @@
                     <span class="slider round"></span>
                 </label>
             </label>
+
+            <section class="model-transform-panel" id="modelTransformPanel" aria-label="Selected model transform" aria-disabled="true">
+                <div class="transform-panel-header">
+                    <h3>Selected Model</h3>
+                    <span id="selectedModelStatus">No model selected</span>
+                </div>
+                <div class="transform-groups">
+                    <div class="transform-group">
+                        <h4>Translate</h4>
+                        <label>X <input id="translateXSlider" type="range" min="-300" max="300" step="1" value="0" disabled><output id="translateXValue">0</output></label>
+                        <label>Y <input id="translateYSlider" type="range" min="0" max="1000" step="1" value="0" disabled><output id="translateYValue">0</output></label>
+                        <label>Z <input id="translateZSlider" type="range" min="-300" max="300" step="1" value="0" disabled><output id="translateZValue">0</output></label>
+                    </div>
+                    <div class="transform-group">
+                        <h4>Rotate</h4>
+                        <label>X <input id="rotateXSlider" type="range" min="-180" max="180" step="1" value="0" disabled><output id="rotateXValue">0 deg</output></label>
+                        <label>Y <input id="rotateYSlider" type="range" min="-180" max="180" step="1" value="0" disabled><output id="rotateYValue">0 deg</output></label>
+                        <label>Z <input id="rotateZSlider" type="range" min="-180" max="180" step="1" value="0" disabled><output id="rotateZValue">0 deg</output></label>
+                    </div>
+                </div>
+            </section>
 
             <div id="viewer"></div>
         </main>
@@ -82,14 +104,32 @@
         const randomPackBtn = document.getElementById('randomPackBtn');
 
         const togglePhysicsCheckbox = document.getElementById('togglePhysicsCheckbox');
+        const modelTransformPanel = document.getElementById('modelTransformPanel');
+        const selectedModelStatus = document.getElementById('selectedModelStatus');
+        const translateXSlider = document.getElementById('translateXSlider');
+        const translateYSlider = document.getElementById('translateYSlider');
+        const translateZSlider = document.getElementById('translateZSlider');
+        const rotateXSlider = document.getElementById('rotateXSlider');
+        const rotateYSlider = document.getElementById('rotateYSlider');
+        const rotateZSlider = document.getElementById('rotateZSlider');
+        const translateXValue = document.getElementById('translateXValue');
+        const translateYValue = document.getElementById('translateYValue');
+        const translateZValue = document.getElementById('translateZValue');
+        const rotateXValue = document.getElementById('rotateXValue');
+        const rotateYValue = document.getElementById('rotateYValue');
+        const rotateZValue = document.getElementById('rotateZValue');
+        const cameraNear = 0.1;
+        const cameraFar = 12000;
+        const maxCameraDistance = 5000;
 
         const scene = new THREE.Scene();
-        const camera = new THREE.PerspectiveCamera(60, container.clientWidth / container.clientHeight, 0.1, 1000);
+        const camera = new THREE.PerspectiveCamera(60, container.clientWidth / container.clientHeight, cameraNear, cameraFar);
         const renderer = new THREE.WebGLRenderer({ antialias: true });
         renderer.setSize(container.clientWidth, container.clientHeight);
         container.appendChild(renderer.domElement);
 
         const controls = new OrbitControls(camera, renderer.domElement);
+        controls.maxDistance = maxCameraDistance;
         camera.position.set(0, 550, 275);
         controls.update();
 
@@ -97,9 +137,11 @@
         scene.add(light);
 
         const world = new CANNON.World({ gravity: new CANNON.Vec3(0, -98.2, 0) });
-
         let physicsEnabled = togglePhysicsCheckbox.checked;
         let selectedBody = null;
+        let selectedObject = null;
+        let selectionBox = null;
+        let isEditingTransform = false;
         let dragPlane = null;
         let groundBody = null;
         let groundMesh = null;
@@ -112,15 +154,168 @@
         const mouse = new THREE.Vector2();
         const raycaster = new THREE.Raycaster();
         let dragPointOffset = new THREE.Vector3();
+        const transformOutputs = {
+            translateX: translateXValue,
+            translateY: translateYValue,
+            translateZ: translateZValue,
+            rotateX: rotateXValue,
+            rotateY: rotateYValue,
+            rotateZ: rotateZValue,
+        };
+        const transformInputs = [
+            translateXSlider,
+            translateYSlider,
+            translateZSlider,
+            rotateXSlider,
+            rotateYSlider,
+            rotateZSlider,
+        ];
+        const bucketSize = {
+            width: +widthSlider.value,
+            depth: +depthSlider.value,
+            height: +heightSlider.value,
+        };
 
         [widthSlider, depthSlider, heightSlider].forEach(slider => {
             slider.addEventListener('input', () => {
                 const w = +widthSlider.value;
                 const d = +depthSlider.value;
                 const h = +heightSlider.value;
+                bucketSize.width = w;
+                bucketSize.depth = d;
+                bucketSize.height = h;
                 createWalls(w, d, h);
+                updateTransformRanges();
             });
         });
+
+        transformInputs.forEach(input => {
+            input.addEventListener('pointerdown', startTransformEdit);
+            input.addEventListener('focus', startTransformEdit);
+            input.addEventListener('input', applyTransformControls);
+            input.addEventListener('change', endTransformEdit);
+            input.addEventListener('blur', endTransformEdit);
+        });
+
+        window.addEventListener('pointerup', endTransformEdit);
+
+        function toDegrees(radians) {
+            return THREE.MathUtils.radToDeg(radians);
+        }
+
+        function toRadians(degrees) {
+            return THREE.MathUtils.degToRad(degrees);
+        }
+
+        function enableTransformControls(enabled) {
+            modelTransformPanel.setAttribute('aria-disabled', String(!enabled));
+            transformInputs.forEach(input => {
+                input.disabled = !enabled;
+            });
+        }
+
+        function updateTransformRanges() {
+            translateXSlider.min = -bucketSize.width / 2;
+            translateXSlider.max = bucketSize.width / 2;
+            translateYSlider.min = 0;
+            translateYSlider.max = bucketSize.height;
+            translateZSlider.min = -bucketSize.depth / 2;
+            translateZSlider.max = bucketSize.depth / 2;
+        }
+
+        function updateTransformOutputs() {
+            transformOutputs.translateX.value = Math.round(+translateXSlider.value);
+            transformOutputs.translateY.value = Math.round(+translateYSlider.value);
+            transformOutputs.translateZ.value = Math.round(+translateZSlider.value);
+            transformOutputs.rotateX.value = `${Math.round(+rotateXSlider.value)} deg`;
+            transformOutputs.rotateY.value = `${Math.round(+rotateYSlider.value)} deg`;
+            transformOutputs.rotateZ.value = `${Math.round(+rotateZSlider.value)} deg`;
+        }
+
+        function updateTransformControlsFromSelection() {
+            if (!selectedObject) return;
+
+            const { body, mesh } = selectedObject;
+            mesh.position.copy(body.position);
+            mesh.quaternion.copy(body.quaternion);
+
+            translateXSlider.value = body.position.x;
+            translateYSlider.value = body.position.y;
+            translateZSlider.value = body.position.z;
+
+            const rotation = new THREE.Euler().setFromQuaternion(mesh.quaternion, 'XYZ');
+            rotateXSlider.value = toDegrees(rotation.x);
+            rotateYSlider.value = toDegrees(rotation.y);
+            rotateZSlider.value = toDegrees(rotation.z);
+            updateTransformOutputs();
+        }
+
+        function updateSelectionBox() {
+            if (!selectedObject) return;
+            if (!selectionBox) {
+                selectionBox = new THREE.BoxHelper(selectedObject.mesh, 0x24746f);
+                scene.add(selectionBox);
+            } else {
+                selectionBox.setFromObject(selectedObject.mesh);
+            }
+            selectionBox.visible = true;
+        }
+
+        function setSelectedObject(object) {
+            selectedObject = object;
+            updateTransformRanges();
+            enableTransformControls(Boolean(selectedObject));
+
+            if (!selectedObject) {
+                selectedModelStatus.textContent = 'No model selected';
+                if (selectionBox) selectionBox.visible = false;
+                return;
+            }
+
+            const selectedIndex = physicsObjects.indexOf(selectedObject) + 1;
+            selectedModelStatus.textContent = `Model ${selectedIndex}`;
+            updateTransformControlsFromSelection();
+            updateSelectionBox();
+        }
+
+        function startTransformEdit() {
+            if (!selectedObject) return;
+            isEditingTransform = true;
+            selectedObject.body.type = CANNON.Body.KINEMATIC;
+            selectedObject.body.velocity.setZero();
+            selectedObject.body.angularVelocity.setZero();
+        }
+
+        function endTransformEdit() {
+            if (!selectedObject || !isEditingTransform) return;
+            selectedObject.body.type = CANNON.Body.DYNAMIC;
+            selectedObject.body.velocity.setZero();
+            selectedObject.body.angularVelocity.setZero();
+            isEditingTransform = false;
+        }
+
+        function applyTransformControls() {
+            if (!selectedObject) return;
+
+            startTransformEdit();
+
+            const { body, mesh } = selectedObject;
+            body.position.set(+translateXSlider.value, +translateYSlider.value, +translateZSlider.value);
+
+            const rotation = new THREE.Euler(
+                toRadians(+rotateXSlider.value),
+                toRadians(+rotateYSlider.value),
+                toRadians(+rotateZSlider.value),
+                'XYZ'
+            );
+            mesh.position.copy(body.position);
+            mesh.quaternion.setFromEuler(rotation);
+            body.quaternion.set(mesh.quaternion.x, mesh.quaternion.y, mesh.quaternion.z, mesh.quaternion.w);
+            body.velocity.setZero();
+            body.angularVelocity.setZero();
+            updateTransformOutputs();
+            updateSelectionBox();
+        }
 
         function createWalls(width, depth, height) {
             // Remove existing walls and ground
@@ -226,6 +421,7 @@
                 world.addBody(body);
 
                 physicsObjects.push({ mesh, body });
+                setSelectedObject(physicsObjects[physicsObjects.length - 1]);
             };
             reader.readAsArrayBuffer(blob);
         }
@@ -240,6 +436,11 @@
                     mesh.position.copy(body.position);
                     mesh.quaternion.copy(body.quaternion);
                 }
+            }
+
+            if (selectedObject) {
+                if (!isEditingTransform) updateTransformControlsFromSelection();
+                updateSelectionBox();
             }
 
             controls.update();
@@ -334,6 +535,7 @@
                     Math.random() * Math.PI
                 );
             });
+            if (selectedObject) updateTransformControlsFromSelection();
         });
 
         togglePhysicsCheckbox.addEventListener('click', () => {
@@ -370,6 +572,7 @@
                 const intersect = intersects[0];
                 const picked = physicsObjects.find(o => o.mesh === intersect.object);
                 if (picked) {
+                    setSelectedObject(picked);
                     selectedBody = picked.body;
                     selectedBody.type = CANNON.Body.KINEMATIC;
                     selectedBody.velocity.set(0, 0, 0);
@@ -379,6 +582,8 @@
                     dragPlane = new THREE.Plane().setFromNormalAndCoplanarPoint(planeNormal, intersect.point);
                     dragPointOffset.copy(intersect.point).sub(selectedBody.position);
                 }
+            } else {
+                setSelectedObject(null);
             }
         });
         container.addEventListener('mousemove', e => {
@@ -387,6 +592,8 @@
             point.sub(dragPointOffset);
             if (point.y < 0.5) point.y = 0.5;
             selectedBody.position.copy(point);
+            updateTransformControlsFromSelection();
+            updateSelectionBox();
         });
         container.addEventListener('mouseup', () => {
             if (selectedBody) {
