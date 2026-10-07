@@ -1,0 +1,45 @@
+name: Publish website and public albums
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+  schedule:
+    - cron: '23 * * * *'
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+concurrency:
+  group: pages
+  cancel-in-progress: false
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Stage public site files
+        run: |
+          mkdir -p _site
+          cp *.html CNAME _site/
+          cp -R assets css data partials js _site/
+      - name: Refresh public albums
+        id: sync
+        continue-on-error: true
+        env:
+          SMUGMUG_API_KEY: ${{ secrets.SMUGMUG_API_KEY }}
+        run: python tools/sync_smugmug.py --output _site/data/smugmug.json
+      - uses: actions/configure-pages@v5
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: _site
+      - uses: actions/deploy-pages@v4
+        id: deployment
+      - name: Report refresh failure after removing stale previews
+        if: steps.sync.outcome == 'failure'
+        run: exit 1

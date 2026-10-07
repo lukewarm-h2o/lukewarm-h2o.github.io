@@ -31,6 +31,19 @@
                 </div>
             </section>
 
+            <section class="gallery-section" aria-labelledby="smugmug-heading">
+                <div class="section-heading">
+                    <div>
+                        <p class="eyebrow">Photo albums</p>
+                        <h2 id="smugmug-heading">Explore the latest collections</h2>
+                        <p>Open an album to see the full gallery.</p>
+                    </div>
+                    <a href="https://lukeboppart.smugmug.com/browse">All albums →</a>
+                </div>
+                <p id="smugmug-status" role="status">Loading albums…</p>
+                <div class="collection-grid" id="smugmug-collections"></div>
+            </section>
+
             <section class="gallery-section" aria-labelledby="all-gallery-heading">
                 <div class="section-heading">
                     <div>
@@ -85,6 +98,7 @@
         <footer>
             &copy; 2026 Luke Boppart. Built with love.
         </footer>
+        <script type="module" src="js/smugmug.js"></script>
         <script>
             fetch('/partials/header.html')
                 .then(res => res.text())

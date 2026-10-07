@@ -734,6 +734,14 @@ input:checked + .slider:before {
     width: 100%;
 }
 
+.smugmug-preview {
+    text-decoration: none;
+}
+
+#smugmug-collections {
+    grid-template-columns: repeat(auto-fill, minmax(min(100%, 280px), 1fr));
+}
+
 .folder-body {
     display: grid;
     gap: 1rem;
