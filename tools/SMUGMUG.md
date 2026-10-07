@@ -2,8 +2,9 @@
 
 Upload photos and choose gallery visibility in SmugMug. Public, unlocked albums
 with a cover and external embedding enabled appear in the website's Photo albums
-section. Visitors follow a preview to the full SmugMug gallery. Existing local
-portfolio collections remain available below it.
+section. Visitors follow a preview to the full SmugMug gallery. The local redesign
+uses one album grid, with totals derived from its visible public albums. The old
+gallery data and original photos are retained until migration is verified.
 
 The sync uses only an API key and anonymous public discovery, without an API
 secret, owner login, or private gallery links. It walks nested public folders and
@@ -20,14 +21,15 @@ originals and generated metadata are not committed to Git.
 4. Run **Publish website and public albums** from the Actions tab and verify it succeeds.
 
 The workflow deploys the existing site plus refreshed metadata on pushes, manual
-runs and hourly at minute 23. It needs no paid hosting or additional Python packages.
+runs and every six hours at 00:23, 06:23, 12:23 and 18:23 UTC. It needs no paid hosting or additional Python packages.
 The original branch-based Pages deployment must be switched for this workflow to work.
 
 ## Privacy changes and timing
 
 New public albums and visibility changes appear after the next successful deployment.
 GitHub schedules may be delayed; this is not an instant privacy revocation mechanism.
-The browser hides previews more than two hours old and rechecks every five minutes
+The browser hides previews more than eight hours old (allowing two hours beyond
+the six-hour schedule for delays) and rechecks every five minutes
 and when returning to the tab. A failed sync deploys an empty list instead of old
 previews, then marks the workflow failed. A deployment failure can still leave the
 previous JSON accessible at its URL; the expiry rule hides it in the UI only.
@@ -38,7 +40,21 @@ Private sharing itself remains entirely controlled by SmugMug.
 GitHub can disable scheduled workflows in inactive public repositories. Check the
 Actions tab if previews disappear, re-enable the workflow and run it manually.
 
-## Local preview
+## Preparing migrated photos
+
+Before any album upload, run `python3 tools/prepare_gallery_uploads.py` from the
+repository root using a Python environment with Pillow. It reads the local
+`migration/inventory.json` and stages copies under `migration/clean-uploads/`.
+Upload only these verified copies. The originals stay untouched.
+
+The preparation step removes empty EXIF UserComment values, including the
+zero-filled `0x000...` text found in RapidRAW exports. Meaningful comments stay.
+JPEG cleanup edits only the EXIF directory, without recompressing images. Every
+copy is checked for identical decoded pixels and unchanged other EXIF fields;
+`verification.json` records source/upload hashes. Unsupported formats with an
+empty comment fail for review rather than silently uploading the placeholder.
+
+## Local preview commands
 
 Set `SMUGMUG_API_KEY` in your shell environment, then run:
 

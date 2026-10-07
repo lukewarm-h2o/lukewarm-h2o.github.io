@@ -735,39 +735,105 @@ input:checked + .slider:before {
 }
 
 .smugmug-preview {
+    position: relative;
+    min-height: 280px;
+    grid-template-rows: 1fr;
+    align-items: end;
     text-decoration: none;
+}
+
+.smugmug-preview > img {
+    position: absolute;
+    inset: 0;
+    height: 100%;
 }
 
 #smugmug-collections {
     grid-template-columns: repeat(auto-fill, minmax(min(100%, 280px), 1fr));
 }
 
+.album-status {
+    background: var(--color-surface-soft);
+    border: 1px solid var(--color-border);
+    border-radius: 8px;
+    padding: 1.25rem;
+}
+
 .folder-body {
+    background: #ffffff;
+    border-top: 1px solid #dce2df;
+    color: #1c2422;
     display: grid;
-    gap: 1rem;
-    grid-template-columns: minmax(0, 1fr) auto;
-    padding: 0.9rem;
+    gap: 0.85rem;
+    grid-template-columns: minmax(0, 1fr);
+    padding: 1.1rem 1.2rem;
 }
 
 .folder-body h3 {
-    font-size: 1.05rem;
-    margin-bottom: 0.35rem;
+    color: #1c2422;
+    font-size: 1.15rem;
+    font-weight: 700;
+    line-height: 1.35;
+    overflow-wrap: anywhere;
+    margin-bottom: 0.5rem;
 }
 
 .folder-body p {
-    color: var(--color-muted);
-    font-size: 0.86rem;
+    color: #424f4a;
+    font-size: 0.95rem;
 }
 
 .folder-body span {
     align-self: start;
-    background: var(--color-surface-soft);
+    justify-self: start;
+    background: #e6eeea;
     border-radius: 999px;
-    color: var(--color-secondary);
+    color: #24473d;
     font-family: var(--font-mono);
-    font-size: 0.72rem;
-    padding: 0.2rem 0.45rem;
+    font-size: 0.8rem;
+    padding: 0.25rem 0.65rem;
     white-space: nowrap;
+}
+
+.smugmug-preview .folder-body {
+    position: relative;
+    background: rgba(246, 247, 244, 0.48);
+    -webkit-backdrop-filter: blur(2px);
+    backdrop-filter: blur(2px);
+    border-top: 1px solid rgba(255, 255, 255, 0.55);
+    grid-template-columns: minmax(0, 1fr) auto;
+    align-items: end;
+    gap: 0.75rem;
+    padding: 1rem 1.1rem;
+}
+
+.smugmug-preview .folder-body h3 {
+    color: #1c2422;
+    margin-bottom: 0.4rem;
+}
+
+.smugmug-preview .folder-body p {
+    color: #185552;
+    font-size: 0.78rem;
+    font-weight: 500;
+}
+
+.smugmug-preview .folder-body span {
+    align-self: end;
+    background: transparent;
+    color: #1c2422;
+    font-size: 0.72rem;
+    padding: 0;
+}
+
+.smugmug-preview:hover .folder-body p {
+    text-decoration: underline;
+    text-underline-offset: 0.2em;
+}
+
+.collection-folder.smugmug-preview:focus-visible {
+    outline: 3px solid #185552;
+    outline-offset: 4px;
 }
 
 .gallery-card {
@@ -808,16 +874,20 @@ input:checked + .slider:before {
 }
 
 .gallery-card-body {
-    padding: 0.85rem;
+    background: #ffffff;
+    border-top: 1px solid #dce2df;
+    color: #1c2422;
+    padding: 1rem;
 }
 
 .gallery-card h3 {
+    color: #1c2422;
     font-size: 1rem;
     margin-bottom: 0.35rem;
 }
 
 .gallery-card p {
-    color: var(--color-muted);
+    color: #424f4a;
     font-size: 0.85rem;
 }
 

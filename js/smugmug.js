@@ -1,11 +1,18 @@
 // Only public metadata is published here. API keys stay in GitHub Actions secrets.
 const grid = document.getElementById('smugmug-collections');
 const status = document.getElementById('smugmug-status');
-const maxAge = 2 * 60 * 60 * 1000;
+const photoCount = document.getElementById('photo-count');
+const albumCount = document.getElementById('collection-count');
+// Six-hour sync interval, plus two hours for deployment delays.
+const maxAge = 8 * 60 * 60 * 1000;
 let expiry;
 
 function showUnavailable() {
     grid.replaceChildren();
+    photoCount.textContent = '—';
+    albumCount.textContent = '—';
+    photoCount.nextElementSibling.textContent = 'Public photos';
+    albumCount.nextElementSibling.textContent = 'Public albums';
     status.hidden = false;
     status.textContent = 'Album previews are temporarily unavailable. You can still browse the galleries on SmugMug.';
 }
@@ -28,10 +35,12 @@ async function refresh() {
             throw new Error('Unavailable');
         }
         const cards = [];
+        let photos = 0;
         for (const album of data.albums) {
             const href = allowedUrl(album.url, 'lukeboppart.smugmug.com');
             const cover = allowedUrl(album.cover, 'photos.smugmug.com');
-            if (!href || !cover) continue;
+            if (!href || !cover || !Number.isInteger(album.count) || album.count < 1) continue;
+            photos += album.count;
             const card = document.createElement('a');
             card.className = 'collection-folder smugmug-preview';
             card.href = href;
@@ -55,6 +64,10 @@ async function refresh() {
             cards.push(card);
         }
         grid.replaceChildren(...cards);
+        photoCount.textContent = photos.toLocaleString();
+        albumCount.textContent = cards.length.toLocaleString();
+        photoCount.nextElementSibling.textContent = photos === 1 ? 'Public photo' : 'Public photos';
+        albumCount.nextElementSibling.textContent = cards.length === 1 ? 'Public album' : 'Public albums';
         status.hidden = cards.length > 0;
         status.textContent = 'No public albums to show yet.';
         expiry = setTimeout(showUnavailable, Math.max(0, maxAge - age));

@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Gallery - Luke Boppart</title>
     <link rel="icon" href="assets/icons/page-icon.svg" type="image/svg+xml">
-    <link rel="stylesheet" href="css/styles.css?v=modernmaker-3">
+    <link rel="stylesheet" href="css/styles.css?v=gallery-albums-1">
 </head>
 
 <body class="gallery-page">
@@ -21,12 +21,12 @@
                 </div>
                 <div class="gallery-stats" aria-label="Gallery summary">
                     <div class="gallery-stat">
-                        <strong id="photo-count">0</strong>
-                        <span>Photos</span>
+                        <strong id="photo-count">—</strong>
+                        <span>Public photos</span>
                     </div>
                     <div class="gallery-stat">
-                        <strong id="collection-count">0</strong>
-                        <span>Collections</span>
+                        <strong id="collection-count">—</strong>
+                        <span>Public albums</span>
                     </div>
                 </div>
             </section>
@@ -35,65 +35,15 @@
                 <div class="section-heading">
                     <div>
                         <p class="eyebrow">Photo albums</p>
-                        <h2 id="smugmug-heading">Explore the latest collections</h2>
-                        <p>Open an album to see the full gallery.</p>
+                        <h2 id="smugmug-heading">Browse the collections</h2>
+                        <p>Choose a collection to explore the full gallery on SmugMug.</p>
                     </div>
                     <a href="https://lukeboppart.smugmug.com/browse">All albums →</a>
                 </div>
-                <p id="smugmug-status" role="status">Loading albums…</p>
-                <div class="collection-grid" id="smugmug-collections"></div>
+                <p class="album-status" id="smugmug-status" role="status">Loading albums…</p>
+                <div class="collection-grid" id="smugmug-collections" aria-label="Public photo albums"></div>
             </section>
 
-            <section class="gallery-section" aria-labelledby="all-gallery-heading">
-                <div class="section-heading">
-                    <div>
-                        <p class="eyebrow">All</p>
-                        <h2 id="all-gallery-heading">A taste of everything</h2>
-                    </div>
-                    <button type="button" class="text-button" id="shuffle-button">Shuffle</button>
-                </div>
-                <div class="photo-rail" id="all-photo-rail" aria-label="All gallery photos"></div>
-            </section>
-
-            <section class="gallery-section" aria-labelledby="collections-heading">
-                <div class="section-heading">
-                    <div>
-                        <p class="eyebrow">Collections</p>
-                        <h2 id="collections-heading">Browse by collection</h2>
-                    </div>
-                </div>
-                <div class="collection-grid" id="collection-grid"></div>
-            </section>
-
-            <section class="gallery-section collection-browser" aria-labelledby="active-collection-heading">
-                <div class="section-heading">
-                    <div>
-                        <p class="eyebrow" id="active-collection-kicker">Selected folder</p>
-                        <h2 id="active-collection-heading">Collection</h2>
-                        <p id="active-collection-description"></p>
-                    </div>
-                </div>
-                <div class="gallery-grid" id="collection-photo-grid"></div>
-                <p class="empty-state" id="gallery-empty" hidden>No photos in this collection yet.</p>
-            </section>
-
-            <div class="lightbox" id="lightbox" role="dialog" aria-modal="true" aria-hidden="true">
-                <div class="lightbox-panel">
-                    <div class="lightbox-actions">
-                        <button type="button" id="prev-btn" aria-label="Previous photo">&lt;</button>
-                        <button type="button" id="next-btn" aria-label="Next photo">&gt;</button>
-                        <button type="button" id="close-lightbox" aria-label="Close photo">&times;</button>
-                    </div>
-                    <img id="lightbox-img" src="" alt="">
-                    <div class="lightbox-meta">
-                        <div>
-                            <h3 id="lightbox-title"></h3>
-                            <p id="lightbox-caption"></p>
-                        </div>
-                        <p id="lightbox-location"></p>
-                    </div>
-                </div>
-            </div>
         </main>
         <footer>
             &copy; 2026 Luke Boppart. Built with love.
@@ -101,194 +51,17 @@
         <script type="module" src="js/smugmug.js"></script>
         <script>
             fetch('/partials/header.html')
-                .then(res => res.text())
-                .then(html => {
-                    document
-                        .getElementById('header-placeholder')
-                        .innerHTML = html;
-                });
-
-            const allRail = document.getElementById('all-photo-rail');
-            const collectionGrid = document.getElementById('collection-grid');
-            const collectionPhotoGrid = document.getElementById('collection-photo-grid');
-            const empty = document.getElementById('gallery-empty');
-            const lightbox = document.getElementById('lightbox');
-            const lightboxImg = document.getElementById('lightbox-img');
-            const lightboxTitle = document.getElementById('lightbox-title');
-            const lightboxCaption = document.getElementById('lightbox-caption');
-            const lightboxLocation = document.getElementById('lightbox-location');
-            const closeLightbox = document.getElementById('close-lightbox');
-            const prevBtn = document.getElementById('prev-btn');
-            const nextBtn = document.getElementById('next-btn');
-            const shuffleButton = document.getElementById('shuffle-button');
-            const photoCount = document.getElementById('photo-count');
-            const collectionCount = document.getElementById('collection-count');
-            const activeHeading = document.getElementById('active-collection-heading');
-            const activeDescription = document.getElementById('active-collection-description');
-            let galleryItems = [];
-            let collections = [];
-            let allItems = [];
-            let activeItems = [];
-            let activeCollectionId = '';
-            let lightboxItems = [];
-            let currentIndex = 0;
-
-            fetch('/data/gallery.json')
-                .then(res => {
-                    if (!res.ok) throw new Error(`HTTP ${res.status}`);
-                    return res.json();
+                .then(response => {
+                    if (!response.ok) throw new Error('Navigation unavailable');
+                    return response.text();
                 })
-                .then(data => {
-                    galleryItems = data.items;
-                    collections = data.collections;
-                    photoCount.textContent = galleryItems.length;
-                    collectionCount.textContent = collections.length;
-                    allItems = shuffleItems(galleryItems);
-                    activeCollectionId = collections[0]?.id || '';
-                    renderAllRail();
-                    renderCollections();
-                    renderActiveCollection(activeCollectionId);
-                })
-                .catch(error => {
-                    console.error('Error loading gallery:', error);
-                    empty.hidden = false;
-                    empty.textContent = 'Unable to load the gallery.';
+                .then(html => { document.getElementById('header-placeholder').innerHTML = html; })
+                .catch(() => {
+                    const link = document.createElement('a');
+                    link.href = '/';
+                    link.textContent = 'Luke Boppart — Home';
+                    document.getElementById('header-placeholder').replaceChildren(link);
                 });
-
-            function shuffleItems(items) {
-                return [...items]
-                    .map(item => ({ item, sort: Math.random() }))
-                    .sort((a, b) => a.sort - b.sort)
-                    .map(entry => entry.item);
-            }
-
-            function renderAllRail() {
-                allRail.innerHTML = '';
-                allItems.forEach((item, index) => {
-                    allRail.appendChild(createPhotoCard(item, index, 'rail', () => {
-                        openLightbox(allItems, index);
-                    }));
-                });
-            }
-
-            function renderCollections() {
-                collectionGrid.innerHTML = '';
-                collections.forEach(collection => {
-                    const items = galleryItems.filter(item => item.collection === collection.id);
-                    const cover = getCollectionCover(collection, items);
-                    const card = document.createElement('button');
-                    card.type = 'button';
-                    card.className = 'collection-folder';
-                    card.setAttribute('aria-label', `Open ${collection.name} collection`);
-                    card.setAttribute('aria-pressed', collection.id === activeCollectionId ? 'true' : 'false');
-                    card.innerHTML = `
-                        <img src="${cover}" alt="" loading="lazy" decoding="async">
-                        <div class="folder-body">
-                            <div>
-                                <h3>${collection.name}</h3>
-                                <p>${collection.description}</p>
-                            </div>
-                            <span>${items.length} photos</span>
-                        </div>
-                    `;
-                    card.addEventListener('click', () => {
-                        activeCollectionId = collection.id;
-                        renderCollections();
-                        renderActiveCollection(collection.id);
-                        document.querySelector('.collection-browser').scrollIntoView({ behavior: 'smooth', block: 'start' });
-                    });
-                    collectionGrid.appendChild(card);
-                });
-            }
-
-            function getCollectionCover(collection, items) {
-                if (collection.cover) return collection.cover;
-                return items[0]?.thumb || 'assets/images/default.png';
-            }
-
-            function renderActiveCollection(collectionId) {
-                const collection = collections.find(item => item.id === collectionId);
-                activeItems = galleryItems.filter(item => item.collection === collectionId);
-                activeHeading.textContent = collection?.name || 'Collection';
-                activeDescription.textContent = collection?.description || '';
-                collectionPhotoGrid.innerHTML = '';
-                empty.hidden = activeItems.length > 0;
-
-                activeItems.forEach((item, index) => {
-                    collectionPhotoGrid.appendChild(createPhotoCard(item, index, 'grid', () => {
-                        openLightbox(activeItems, index);
-                    }));
-                });
-            }
-
-            function createPhotoCard(item, index, variant, onOpen) {
-                const card = document.createElement('button');
-                card.type = 'button';
-                card.className = variant === 'rail' ? 'gallery-card rail-card' : 'gallery-card';
-                card.setAttribute('aria-label', `Open ${item.title}`);
-                card.innerHTML = `
-                    <img src="${item.thumb}" alt="${item.alt}" loading="lazy" decoding="async" width="${item.width}" height="${item.height}">
-                    <div class="gallery-card-body">
-                        <h3>${item.title}</h3>
-                        <p>${item.location}</p>
-                        <div class="tag-row">
-                            ${item.tags.map(tag => `<span class="tag">${tag}</span>`).join('')}
-                        </div>
-                    </div>
-                `;
-                card.addEventListener('click', onOpen);
-                return card;
-            }
-
-            function openLightbox(items, index) {
-                lightboxItems = items;
-                currentIndex = index;
-                updateLightbox();
-                lightbox.classList.add('is-open');
-                lightbox.setAttribute('aria-hidden', 'false');
-                closeLightbox.focus();
-            }
-
-            function updateLightbox() {
-                const item = lightboxItems[currentIndex];
-                lightboxImg.src = item.src;
-                lightboxImg.alt = item.alt;
-                lightboxTitle.textContent = item.title;
-                lightboxCaption.textContent = item.caption;
-                lightboxLocation.textContent = item.location;
-            }
-
-            function closeLightboxModal() {
-                lightbox.classList.remove('is-open');
-                lightbox.setAttribute('aria-hidden', 'true');
-                lightboxImg.src = '';
-            }
-
-            function showRelativePhoto(offset) {
-                if (!lightboxItems.length) return;
-                currentIndex = (currentIndex + offset + lightboxItems.length) % lightboxItems.length;
-                updateLightbox();
-            }
-
-            shuffleButton.addEventListener('click', () => {
-                allItems = shuffleItems(galleryItems);
-                renderAllRail();
-                allRail.scrollTo({ left: 0, behavior: 'smooth' });
-            });
-            closeLightbox.addEventListener('click', closeLightboxModal);
-            prevBtn.addEventListener('click', () => showRelativePhoto(-1));
-            nextBtn.addEventListener('click', () => showRelativePhoto(1));
-
-            lightbox.addEventListener('click', (event) => {
-                if (event.target === lightbox) closeLightboxModal();
-            });
-
-            document.addEventListener('keydown', (event) => {
-                if (!lightbox.classList.contains('is-open')) return;
-                if (event.key === 'Escape') closeLightboxModal();
-                if (event.key === 'ArrowLeft') showRelativePhoto(-1);
-                if (event.key === 'ArrowRight') showRelativePhoto(1);
-            });
         </script>
     </div>
 </body>

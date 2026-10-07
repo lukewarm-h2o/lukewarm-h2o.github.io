@@ -5,3 +5,4 @@ __pycache__/
 incoming-gallery/
 data/smugmug.json
 _site/
+migration/
