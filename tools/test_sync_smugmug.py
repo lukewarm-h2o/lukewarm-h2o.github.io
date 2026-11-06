@@ -19,11 +19,23 @@ class PublicDiscoveryTests(unittest.TestCase):
             "second": {"Node": [public]},
             "album": {"Album": dict(SecurityType="None", External=True, ImageCount=1,
                                       Name="Public", WebUri="https://lukeboppart.smugmug.com/Public",
-                                      Uris={"AlbumHighlightImage": "image"})},
+                                      Uris={"AlbumHighlightImage": "image", "AlbumImages": "images"})},
+            "images?count=30": {"AlbumImage": [
+                {"Hidden": True, "Uris": {"ImageSizes": "must-not-fetch"}},
+                {"Hidden": False, "Title": "  A  photo ", "WebUri": "https://lukeboppart.smugmug.com/Public/i-1",
+                 "OriginalWidth": 4000, "OriginalHeight": 3000, "Uris": {"ImageSizes": "sizes"}},
+                {"Hidden": False, "WebUri": "https://evil.example/i-2", "Uris": {"ImageSizes": "sizes"}},
+            ]},
             "image": {"AlbumImage": {"Hidden": False, "Uris": {"ImageSizes": "sizes"}}},
             "sizes": {"ImageSizes": {"LargeImageUrl": "https://photos.smugmug.com/test.jpg"}},
         }
-        self.assertEqual([a["name"] for a in collect(responses.__getitem__)], ["Public"])
+        albums = collect(responses.__getitem__)
+        self.assertEqual([a["name"] for a in albums], ["Public"])
+        photos = albums[0]["photos"]
+        self.assertEqual(len(photos), 1)
+        self.assertEqual(photos[0]["title"], "A photo")
+        self.assertEqual((photos[0]["w"], photos[0]["h"]), (4000, 3000))
+        self.assertTrue(photos[0]["src"].startswith("https://photos.smugmug.com/"))
         responses["image"]["AlbumImage"]["Hidden"] = True
         self.assertEqual(collect(responses.__getitem__), [])
         responses["root"]["Node"]["EffectiveSecurityType"] = "Password"

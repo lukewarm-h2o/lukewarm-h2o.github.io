@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Export public album previews using an API key, never owner credentials."""
+"""Export public album previews and a few display-sized photos per album, using an API key, never owner credentials."""
 import argparse
 import json
 import os
@@ -35,6 +35,51 @@ def link(obj, name):
 def safe_url(value, host):
     url = urlsplit(value or "")
     return value if url.scheme == "https" and url.netloc == host else None
+
+
+PHOTOS_PER_ALBUM = 12
+IMAGE_FETCH_COUNT = 30
+LARGE_SIZES = ("X2LargeImageUrl", "XLargeImageUrl", "LargeImageUrl", "MediumImageUrl")
+THUMB_SIZES = ("MediumImageUrl", "SmallImageUrl", "LargeImageUrl")
+
+
+def first_safe(sizes, keys):
+    for key in keys:
+        value = safe_url(sizes.get(key), "photos.smugmug.com")
+        if value:
+            return value
+    return None
+
+
+def clean_text(value, limit=200):
+    return " ".join(str(value or "").split())[:limit]
+
+
+def collect_photos(album, fetch):
+    """Public, visible photos with display-sized (not original) image URLs."""
+    path = link(album, "AlbumImages")
+    if not path:
+        return []
+    path += ("&" if "?" in path else "?") + f"count={IMAGE_FETCH_COUNT}"
+    photos = []
+    for image in fetch(path).get("AlbumImage", []):
+        if len(photos) >= PHOTOS_PER_ALBUM:
+            break
+        if image.get("Hidden") or not link(image, "ImageSizes"):
+            continue
+        sizes = fetch(link(image, "ImageSizes"))["ImageSizes"]
+        src, thumb = first_safe(sizes, LARGE_SIZES), first_safe(sizes, THUMB_SIZES)
+        page = safe_url(image.get("WebUri"), SITE)
+        if not (src and thumb and page):
+            continue
+        photo = {"title": clean_text(image.get("Title") or image.get("FileName", "").rsplit(".", 1)[0]),
+                 "caption": clean_text(image.get("Caption"), 300),
+                 "url": page, "src": src, "thumb": thumb}
+        width, height = image.get("OriginalWidth"), image.get("OriginalHeight")
+        if isinstance(width, int) and isinstance(height, int) and width > 0 and height > 0:
+            photo.update(w=width, h=height)
+        photos.append(photo)
+    return photos
 
 
 def unlocked(obj):
@@ -79,7 +124,8 @@ def collect(fetch=request):
                                   if safe_url(sizes.get(size), "photos.smugmug.com")), None)
                     if cover:
                         previews.append({"name": album["Name"], "url": href,
-                                         "cover": cover, "count": album["ImageCount"]})
+                                         "cover": cover, "count": album["ImageCount"],
+                                         "photos": collect_photos(album, fetch)})
             path = result.get("Pages", {}).get("NextPage")
 
     # Discover only what an anonymous visitor can browse; never look up supplied private links.

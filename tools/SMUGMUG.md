@@ -9,7 +9,8 @@ gallery data and original photos are retained until migration is verified.
 The sync uses only an API key and anonymous public discovery, without an API
 secret, owner login, or private gallery links. It walks nested public folders and
 pagination, excluding locked galleries and hidden cover images. Only album names,
-counts, public links and display-sized cover URLs go into the deployed website;
+counts, public links and display-sized image URLs (up to 12 visible photos per album,
+at XLarge size where available, never originals) go into the deployed website;
 originals and generated metadata are not committed to Git.
 
 ## Activate deployment
@@ -64,7 +65,11 @@ python3 tools/sync_smugmug.py
 ```
 
 The generated `data/smugmug.json` is ignored by Git. Without a current successful
-sync, the page offers a direct link to browse the galleries.
+sync, the gallery falls back to the local photos in `data/gallery.json`.
+
+The gallery and home page shuffle the exported photos on each visit: the gallery
+stage and album covers rotate through them. Add photos or new public albums in
+SmugMug and they appear after the next sync.
 
 Run the privacy and pagination checks with:
 

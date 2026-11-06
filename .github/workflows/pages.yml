@@ -26,8 +26,8 @@ jobs:
       - name: Stage public site files
         run: |
           mkdir -p _site
-          cp *.html CNAME _site/
-          cp -R assets css data partials js _site/
+          cp *.html CNAME robots.txt sitemap.xml _site/
+          cp -R assets css data js _site/
       - name: Refresh public albums
         id: sync
         continue-on-error: true

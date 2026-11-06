@@ -2,86 +2,93 @@
 <html lang="en">
 
 <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>3D Physics Bucket – Drop STL</title>
-    <link rel="icon" href="assets/icons/page-icon.svg" type="image/svg+xml">
-    <link rel="stylesheet" href="css/styles.css?v=modernmaker-3">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lab — 3D Physics Bucket — Luke Boppart</title>
+    <meta name="description" content="A browser-based STL packer: drop in 3D models and watch them settle with box physics. Built with three.js and cannon-es.">
+    <link rel="canonical" href="https://lukeboppart.com/fun.html">
+    <meta property="og:type" content="website">
+    <meta property="og:site_name" content="Luke Boppart">
+    <meta property="og:title" content="Lab — 3D Physics Bucket — Luke Boppart">
+    <meta property="og:description" content="A browser-based STL packer: drop in 3D models and watch them settle with box physics. Built with three.js and cannon-es.">
+    <meta property="og:url" content="https://lukeboppart.com/fun.html">
+    <meta property="og:image" content="https://lukeboppart.com/assets/images/og.png">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta property="og:image:alt" content="Luke Boppart: engineer working on 3D printing and slicer software, with a bucket of parts in the build chamber.">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:image" content="https://lukeboppart.com/assets/images/og.png">
+    <meta name="theme-color" content="#0E0F10">
+    <link rel="icon" href="assets/icons/favicon.svg" type="image/svg+xml">
+    <link rel="icon" href="assets/icons/icon-32.png" type="image/png" sizes="32x32">
+    <link rel="apple-touch-icon" href="assets/icons/apple-touch-icon.png">
+    <link rel="preload" href="assets/fonts/schibsted-grotesk-var.woff" as="font" type="font/woff" crossorigin>
+    <link rel="preload" href="assets/fonts/jetbrains-mono-var.woff" as="font" type="font/woff" crossorigin>
+    <link rel="stylesheet" href="css/styles.css?v=chamber-4">
 </head>
 
 <body class="fun-page">
-    <div class="container">
-        <header id="header-placeholder"></header>
+    <a class="skip-link" href="#main">Skip to content</a>
+    <header class="topbar">
+        <div class="wrap">
+            <a class="brand" href="index.html"><span class="brand-mark" aria-hidden="true">LB</span>Luke Boppart</a>
+            <nav class="site-nav" aria-label="Primary navigation">
+                <a href="index.html#work">Work</a>
+                <a href="fun.html" aria-current="page">Lab</a>
+                <a href="gallery.html">Gallery</a>
+                <a href="notebook.html">Notebook</a>
+                <a href="contact.html">Contact</a>
+            </nav>
+            <p class="status">On hiatus · open to the next challenge</p>
+        </div>
+    </header>
 
-        <main>
-            <div class="controls">
+    <main id="main">
+        <section class="page-intro">
+            <div class="wrap">
+                <p class="eyebrow">Lab</p>
+                <h1 class="page-title">3D Physics Bucket.</h1>
+                <p class="page-lede">Drop an STL into the bucket and watch it settle, or load the classic Benchy if you don't have a model handy. Click and drag objects to interact; export the packed scene as STL.</p>
+            </div>
+        </section>
+        <section class="lab-main">
+            <div class="wrap">
+                <div class="controls">
                 <label>Width: <input id="widthSlider" type="range" min="10" max="600" value="160" /></label>
                 <label>Depth: <input id="depthSlider" type="range" min="10" max="600" value="160" /></label>
                 <label>Height: <input id="heightSlider" type="range" min="5" max="1000" value="300" /></label>
                 <button id="exportBtn">Export Scene STL</button>
                 <input id="fileInput" type="file" accept=".stl" multiple hidden />
-                <button id="importBtn">Import STL...</button>
+                <button id="importBtn">Import STL</button>
+                <button id="benchyBtn" type="button">Load Benchy</button>
                 <button id="randomPackBtn">Random Pack</button>
             </div>
-            <label class="switchLabel">
-                Physics:
+            <div class="switchLabel">
+                <span id="physicsLabel">Physics:</span>
                 <label class="switch">
-                    <input type="checkbox" id="togglePhysicsCheckbox" checked>
+                    <input type="checkbox" id="togglePhysicsCheckbox" aria-labelledby="physicsLabel" checked>
                     <span class="slider round"></span>
                 </label>
-            </label>
+            </div>
+                <div id="viewer" role="group" aria-label="Interactive 3D physics bucket. Drag models with a pointer; drop an STL file to add it."></div>
+                <p class="lab-note">Models never leave your browser. Drag and drop a .stl file onto the bucket, use Import STL, or load Benchy to try it out.</p>
+            </div>
+        </section>
+    </main>
 
-            <section class="model-transform-panel" id="modelTransformPanel" aria-label="Selected model transform" aria-disabled="true">
-                <div class="transform-panel-header">
-                    <h3>Selected Model</h3>
-                    <span id="selectedModelStatus">No model selected</span>
-                </div>
-                <div class="transform-groups">
-                    <div class="transform-group">
-                        <h4>Translate</h4>
-                        <label>X <input id="translateXSlider" type="range" min="-300" max="300" step="1" value="0" disabled><output id="translateXValue">0</output></label>
-                        <label>Y <input id="translateYSlider" type="range" min="0" max="1000" step="1" value="0" disabled><output id="translateYValue">0</output></label>
-                        <label>Z <input id="translateZSlider" type="range" min="-300" max="300" step="1" value="0" disabled><output id="translateZValue">0</output></label>
-                    </div>
-                    <div class="transform-group">
-                        <h4>Rotate</h4>
-                        <label>X <input id="rotateXSlider" type="range" min="-180" max="180" step="1" value="0" disabled><output id="rotateXValue">0 deg</output></label>
-                        <label>Y <input id="rotateYSlider" type="range" min="-180" max="180" step="1" value="0" disabled><output id="rotateYValue">0 deg</output></label>
-                        <label>Z <input id="rotateZSlider" type="range" min="-180" max="180" step="1" value="0" disabled><output id="rotateZValue">0 deg</output></label>
-                    </div>
-                </div>
-            </section>
-
-            <div id="viewer"></div>
-        </main>
-
-        <div></div>
-
-        <aside>
-            <p>Drag and drop your .stl into the bucket. Click and drag objects to interact.</p>
-        </aside>
-
-        <footer>
-            &copy; 2026 Luke Boppart. Built with love.
-        </footer>
-        <script>
-            fetch('/partials/header.html')
-                .then(res => res.text())
-                .then(html => {
-                    document
-                        .getElementById('header-placeholder')
-                        .innerHTML = html;
-                });
-        </script>
-    </div>
-
+    <footer>
+        <div class="wrap">
+            <span>&copy; 2026 Luke Boppart. Built with love.</span>
+            <span>Set in Schibsted Grotesk &amp; JetBrains Mono</span>
+        </div>
+    </footer>
     <script type="importmap">
     {
       "imports": {
-        "three": "https://cdn.jsdelivr.net/npm/three@0.157.0/build/three.module.js",
-        "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.157.0/examples/jsm/",
-        "three/utils/": "https://cdn.jsdelivr.net/npm/three@0.157.0/examples/jsm/utils/",
-        "cannon": "https://cdn.jsdelivr.net/npm/cannon-es@0.20.0/dist/cannon-es.js"
+        "three": "./js/vendor/three.module.js",
+        "three/addons/": "./js/vendor/addons/",
+        "three/utils/": "./js/vendor/addons/utils/",
+        "cannon": "./js/vendor/cannon-es.js"
       }
     }
     </script>
@@ -102,22 +109,9 @@
         const fileInput = document.getElementById('fileInput');
         const importBtn = document.getElementById('importBtn');
         const randomPackBtn = document.getElementById('randomPackBtn');
+        const benchyBtn = document.getElementById('benchyBtn');
 
         const togglePhysicsCheckbox = document.getElementById('togglePhysicsCheckbox');
-        const modelTransformPanel = document.getElementById('modelTransformPanel');
-        const selectedModelStatus = document.getElementById('selectedModelStatus');
-        const translateXSlider = document.getElementById('translateXSlider');
-        const translateYSlider = document.getElementById('translateYSlider');
-        const translateZSlider = document.getElementById('translateZSlider');
-        const rotateXSlider = document.getElementById('rotateXSlider');
-        const rotateYSlider = document.getElementById('rotateYSlider');
-        const rotateZSlider = document.getElementById('rotateZSlider');
-        const translateXValue = document.getElementById('translateXValue');
-        const translateYValue = document.getElementById('translateYValue');
-        const translateZValue = document.getElementById('translateZValue');
-        const rotateXValue = document.getElementById('rotateXValue');
-        const rotateYValue = document.getElementById('rotateYValue');
-        const rotateZValue = document.getElementById('rotateZValue');
         const cameraNear = 0.1;
         const cameraFar = 12000;
         const maxCameraDistance = 5000;
@@ -125,14 +119,26 @@
         const scene = new THREE.Scene();
         const camera = new THREE.PerspectiveCamera(60, container.clientWidth / container.clientHeight, cameraNear, cameraFar);
         const renderer = new THREE.WebGLRenderer({ antialias: true });
+        renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
         renderer.setSize(container.clientWidth, container.clientHeight);
         container.appendChild(renderer.domElement);
 
+        function resizeViewer() {
+            const w = container.clientWidth, h = container.clientHeight;
+            if (!w || !h) return;
+            camera.aspect = w / h;
+            camera.updateProjectionMatrix();
+            renderer.setSize(w, h);
+        }
+        new ResizeObserver(resizeViewer).observe(container);
+
         const controls = new OrbitControls(camera, renderer.domElement);
         controls.maxDistance = maxCameraDistance;
-        camera.position.set(0, 550, 275);
+        camera.position.set(0, 330, 400);
+        controls.target.set(0, 110, 0);
         controls.update();
 
+        scene.background = new THREE.Color(0x0e0f10);
         const light = new THREE.HemisphereLight(0xffffff, 0x444444);
         scene.add(light);
 
@@ -141,7 +147,6 @@
         let selectedBody = null;
         let selectedObject = null;
         let selectionBox = null;
-        let isEditingTransform = false;
         let dragPlane = null;
         let groundBody = null;
         let groundMesh = null;
@@ -154,22 +159,6 @@
         const mouse = new THREE.Vector2();
         const raycaster = new THREE.Raycaster();
         let dragPointOffset = new THREE.Vector3();
-        const transformOutputs = {
-            translateX: translateXValue,
-            translateY: translateYValue,
-            translateZ: translateZValue,
-            rotateX: rotateXValue,
-            rotateY: rotateYValue,
-            rotateZ: rotateZValue,
-        };
-        const transformInputs = [
-            translateXSlider,
-            translateYSlider,
-            translateZSlider,
-            rotateXSlider,
-            rotateYSlider,
-            rotateZSlider,
-        ];
         const bucketSize = {
             width: +widthSlider.value,
             depth: +depthSlider.value,
@@ -185,75 +174,13 @@
                 bucketSize.depth = d;
                 bucketSize.height = h;
                 createWalls(w, d, h);
-                updateTransformRanges();
             });
         });
-
-        transformInputs.forEach(input => {
-            input.addEventListener('pointerdown', startTransformEdit);
-            input.addEventListener('focus', startTransformEdit);
-            input.addEventListener('input', applyTransformControls);
-            input.addEventListener('change', endTransformEdit);
-            input.addEventListener('blur', endTransformEdit);
-        });
-
-        window.addEventListener('pointerup', endTransformEdit);
-
-        function toDegrees(radians) {
-            return THREE.MathUtils.radToDeg(radians);
-        }
-
-        function toRadians(degrees) {
-            return THREE.MathUtils.degToRad(degrees);
-        }
-
-        function enableTransformControls(enabled) {
-            modelTransformPanel.setAttribute('aria-disabled', String(!enabled));
-            transformInputs.forEach(input => {
-                input.disabled = !enabled;
-            });
-        }
-
-        function updateTransformRanges() {
-            translateXSlider.min = -bucketSize.width / 2;
-            translateXSlider.max = bucketSize.width / 2;
-            translateYSlider.min = 0;
-            translateYSlider.max = bucketSize.height;
-            translateZSlider.min = -bucketSize.depth / 2;
-            translateZSlider.max = bucketSize.depth / 2;
-        }
-
-        function updateTransformOutputs() {
-            transformOutputs.translateX.value = Math.round(+translateXSlider.value);
-            transformOutputs.translateY.value = Math.round(+translateYSlider.value);
-            transformOutputs.translateZ.value = Math.round(+translateZSlider.value);
-            transformOutputs.rotateX.value = `${Math.round(+rotateXSlider.value)} deg`;
-            transformOutputs.rotateY.value = `${Math.round(+rotateYSlider.value)} deg`;
-            transformOutputs.rotateZ.value = `${Math.round(+rotateZSlider.value)} deg`;
-        }
-
-        function updateTransformControlsFromSelection() {
-            if (!selectedObject) return;
-
-            const { body, mesh } = selectedObject;
-            mesh.position.copy(body.position);
-            mesh.quaternion.copy(body.quaternion);
-
-            translateXSlider.value = body.position.x;
-            translateYSlider.value = body.position.y;
-            translateZSlider.value = body.position.z;
-
-            const rotation = new THREE.Euler().setFromQuaternion(mesh.quaternion, 'XYZ');
-            rotateXSlider.value = toDegrees(rotation.x);
-            rotateYSlider.value = toDegrees(rotation.y);
-            rotateZSlider.value = toDegrees(rotation.z);
-            updateTransformOutputs();
-        }
 
         function updateSelectionBox() {
             if (!selectedObject) return;
             if (!selectionBox) {
-                selectionBox = new THREE.BoxHelper(selectedObject.mesh, 0x24746f);
+                selectionBox = new THREE.BoxHelper(selectedObject.mesh, 0xff5a2b);
                 scene.add(selectionBox);
             } else {
                 selectionBox.setFromObject(selectedObject.mesh);
@@ -263,57 +190,10 @@
 
         function setSelectedObject(object) {
             selectedObject = object;
-            updateTransformRanges();
-            enableTransformControls(Boolean(selectedObject));
-
             if (!selectedObject) {
-                selectedModelStatus.textContent = 'No model selected';
                 if (selectionBox) selectionBox.visible = false;
                 return;
             }
-
-            const selectedIndex = physicsObjects.indexOf(selectedObject) + 1;
-            selectedModelStatus.textContent = `Model ${selectedIndex}`;
-            updateTransformControlsFromSelection();
-            updateSelectionBox();
-        }
-
-        function startTransformEdit() {
-            if (!selectedObject) return;
-            isEditingTransform = true;
-            selectedObject.body.type = CANNON.Body.KINEMATIC;
-            selectedObject.body.velocity.setZero();
-            selectedObject.body.angularVelocity.setZero();
-        }
-
-        function endTransformEdit() {
-            if (!selectedObject || !isEditingTransform) return;
-            selectedObject.body.type = CANNON.Body.DYNAMIC;
-            selectedObject.body.velocity.setZero();
-            selectedObject.body.angularVelocity.setZero();
-            isEditingTransform = false;
-        }
-
-        function applyTransformControls() {
-            if (!selectedObject) return;
-
-            startTransformEdit();
-
-            const { body, mesh } = selectedObject;
-            body.position.set(+translateXSlider.value, +translateYSlider.value, +translateZSlider.value);
-
-            const rotation = new THREE.Euler(
-                toRadians(+rotateXSlider.value),
-                toRadians(+rotateYSlider.value),
-                toRadians(+rotateZSlider.value),
-                'XYZ'
-            );
-            mesh.position.copy(body.position);
-            mesh.quaternion.setFromEuler(rotation);
-            body.quaternion.set(mesh.quaternion.x, mesh.quaternion.y, mesh.quaternion.z, mesh.quaternion.w);
-            body.velocity.setZero();
-            body.angularVelocity.setZero();
-            updateTransformOutputs();
             updateSelectionBox();
         }
 
@@ -330,7 +210,7 @@
 
             // Ground (visual + physics)
             const groundGeo = new THREE.PlaneGeometry(width, depth);
-            const groundMat = new THREE.MeshStandardMaterial({ color: 0xcccccf });
+            const groundMat = new THREE.MeshStandardMaterial({ color: 0x1b1c1e });
             groundMesh = new THREE.Mesh(groundGeo, groundMat);
             groundMesh.rotation.x = -Math.PI / 2;
             scene.add(groundMesh);
@@ -358,9 +238,11 @@
 
                 const geo = new THREE.PlaneGeometry(index < 2 ? width : depth, height);
                 const mat = new THREE.MeshStandardMaterial({
-                    color: 0xdddddd,
-                    transparent: index === 1,
-
+                    color: 0xece9e4,
+                    opacity: 0.12,
+                    transparent: true,
+                    depthWrite: false,
+                    side: THREE.DoubleSide,
                 });
                 const mesh = new THREE.Mesh(geo, mat);
                 mesh.position.set(...pos);
@@ -439,7 +321,6 @@
             }
 
             if (selectedObject) {
-                if (!isEditingTransform) updateTransformControlsFromSelection();
                 updateSelectionBox();
             }
 
@@ -458,6 +339,24 @@
         }
 
         importBtn.addEventListener('click', () => fileInput.click());
+
+        benchyBtn.addEventListener('click', async () => {
+            const label = benchyBtn.textContent;
+            benchyBtn.disabled = true;
+            benchyBtn.textContent = 'Loading...';
+            try {
+                const response = await fetch('assets/models/3DBenchy.stl');
+                if (!response.ok) throw new Error(response.status);
+                loadSTL(await response.blob());
+            } catch (err) {
+                console.warn('Could not load Benchy', err);
+                benchyBtn.textContent = 'Could not load Benchy';
+                setTimeout(() => { benchyBtn.textContent = label; benchyBtn.disabled = false; }, 2500);
+                return;
+            }
+            benchyBtn.textContent = label;
+            benchyBtn.disabled = false;
+        });
 
         fileInput.addEventListener('change', (e) => {
             Array.from(e.target.files)
@@ -535,7 +434,6 @@
                     Math.random() * Math.PI
                 );
             });
-            if (selectedObject) updateTransformControlsFromSelection();
         });
 
         togglePhysicsCheckbox.addEventListener('click', () => {
@@ -561,7 +459,8 @@
         });
 
         // Physics Drag
-        container.addEventListener('mousedown', e => {
+        container.addEventListener('pointerdown', e => {
+            if (e.pointerType === 'mouse' && e.button !== 0) return;
             const rect = container.getBoundingClientRect();
             mouse.x = ((e.clientX - rect.left) / container.clientWidth) * 2 - 1;
             mouse.y = -((e.clientY - rect.top) / container.clientHeight) * 2 + 1;
@@ -581,21 +480,21 @@
                     const planeNormal = camera.getWorldDirection(new THREE.Vector3()).normalize();
                     dragPlane = new THREE.Plane().setFromNormalAndCoplanarPoint(planeNormal, intersect.point);
                     dragPointOffset.copy(intersect.point).sub(selectedBody.position);
+                    try { container.setPointerCapture(e.pointerId); } catch (_) { }
                 }
             } else {
                 setSelectedObject(null);
             }
-        });
-        container.addEventListener('mousemove', e => {
+        }, true);
+        container.addEventListener('pointermove', e => {
             if (!selectedBody || !dragPlane) return;
             const point = getMouseRayIntersection(e, dragPlane);
             point.sub(dragPointOffset);
             if (point.y < 0.5) point.y = 0.5;
             selectedBody.position.copy(point);
-            updateTransformControlsFromSelection();
             updateSelectionBox();
         });
-        container.addEventListener('mouseup', () => {
+        function endPhysicsDrag() {
             if (selectedBody) {
                 selectedBody.type = CANNON.Body.DYNAMIC;
                 selectedBody.velocity.setZero();
@@ -604,12 +503,15 @@
                 dragPlane = null;
                 controls.enabled = true;
             }
-        });
+        }
+        container.addEventListener('pointerup', endPhysicsDrag);
+        container.addEventListener('pointercancel', endPhysicsDrag);
 
         createWalls(160, 160, 300);
         animate();
 
     </script>
+    <script src="js/zrail.js" defer></script>
 </body>
 
 </html>

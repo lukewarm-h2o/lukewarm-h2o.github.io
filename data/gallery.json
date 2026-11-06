@@ -29,11 +29,10 @@
         "print",
         "bench"
       ],
-      "src": "assets/images/IMG_0461.png",
       "thumb": "assets/images/thumbs/IMG_0461.jpg",
       "alt": "Wide workshop view of a 3D printed part",
-      "width": 4032,
-      "height": 1658
+      "width": 1,
+      "height": 1
     },
     {
       "title": "Material Study",
@@ -44,11 +43,10 @@
         "print",
         "texture"
       ],
-      "src": "assets/images/IMG_0448.png",
       "thumb": "assets/images/thumbs/IMG_0448.jpg",
       "alt": "Close view of a 3D printed object",
-      "width": 4032,
-      "height": 3024
+      "width": 1,
+      "height": 1
     },
     {
       "title": "Escaping the Lab",
@@ -59,11 +57,10 @@
         "print",
         "prototype"
       ],
-      "src": "assets/images/IMG_0535.png",
       "thumb": "assets/images/thumbs/IMG_0535.jpg",
       "alt": "3D printed object on a workbench",
-      "width": 4032,
-      "height": 3024
+      "width": 1,
+      "height": 1
     },
     {
       "title": "Clearly stopped mid-print",
@@ -74,11 +71,10 @@
         "object",
         "print"
       ],
-      "src": "assets/images/IMG_2350.png",
       "thumb": "assets/images/thumbs/IMG_2350.jpg",
       "alt": "Small 3D printed object on a desk",
-      "width": 3072,
-      "height": 2304
+      "width": 1,
+      "height": 1
     },
     {
       "title": "Banana for Scale",
@@ -89,11 +85,10 @@
         "scale",
         "print"
       ],
-      "src": "assets/images/IMG_2688.png",
       "thumb": "assets/images/thumbs/IMG_2688.jpg",
       "alt": "3D printed object shown with a banana for scale",
-      "width": 4032,
-      "height": 3024
+      "width": 1,
+      "height": 1
     },
     {
       "title": "Plant Honey",
@@ -104,11 +99,10 @@
         "home",
         "portrait"
       ],
-      "src": "assets/images/IMG_2357.PNG",
       "thumb": "assets/images/thumbs/IMG_2357.jpg",
       "alt": "Pet near a houseplant",
-      "width": 1179,
-      "height": 1044
+      "width": 1,
+      "height": 1
     },
     {
       "title": "Skelly",
@@ -119,11 +113,10 @@
         "object",
         "home"
       ],
-      "src": "assets/images/IMG_3123.PNG",
       "thumb": "assets/images/thumbs/IMG_3123.jpg",
       "alt": "Small skeleton object scene",
-      "width": 1179,
-      "height": 1179
+      "width": 1,
+      "height": 1
     },
     {
       "title": "Stretch Honey",
@@ -134,11 +127,10 @@
         "home",
         "portrait"
       ],
-      "src": "assets/images/IMG_3124.PNG",
       "thumb": "assets/images/thumbs/IMG_3124.jpg",
       "alt": "Pet stretching indoors",
-      "width": 1179,
-      "height": 1179
+      "width": 1,
+      "height": 1
     },
     {
       "title": "City Tile",
@@ -149,11 +141,10 @@
         "city",
         "travel"
       ],
-      "src": "assets/images/IMG_2982.png",
       "thumb": "assets/images/thumbs/IMG_2982.jpg",
       "alt": "Cityscape view",
-      "width": 4032,
-      "height": 3024
+      "width": 1,
+      "height": 1
     },
     {
       "title": "Book Honey",
@@ -164,11 +155,10 @@
         "home",
         "books"
       ],
-      "src": "assets/images/IMG_0113.png",
       "thumb": "assets/images/thumbs/IMG_0113.jpg",
       "alt": "Pet near books at home",
-      "width": 4032,
-      "height": 3024
+      "width": 1,
+      "height": 1
     },
     {
       "title": "Printed Toys",
@@ -179,11 +169,10 @@
         "print",
         "toys"
       ],
-      "src": "assets/images/IMG_3524.png",
       "thumb": "assets/images/thumbs/IMG_3524.jpg",
       "alt": "Collection of 3D printed toys",
-      "width": 4032,
-      "height": 3024
+      "width": 1,
+      "height": 1
     },
     {
       "title": "Hull Shoreline",
@@ -194,11 +183,10 @@
         "beach",
         "landscape"
       ],
-      "src": "assets/images/hull-shoreline.jpg",
       "thumb": "assets/images/thumbs/hull-shoreline.jpg",
       "alt": "2026 06 20 Dsc01388 Edited",
-      "width": 6880,
-      "height": 4586
+      "width": 1,
+      "height": 1
     },
     {
       "title": "Camp",
@@ -209,11 +197,10 @@
         "beach",
         "landscape"
       ],
-      "src": "assets/images/camp.jpg",
       "thumb": "assets/images/thumbs/camp.jpg",
       "alt": "2026 06 20 Dsc01405 Edited",
-      "width": 9504,
-      "height": 6336
+      "width": 1,
+      "height": 1
     },
     {
       "title": "Boston Light",
@@ -224,11 +211,10 @@
         "landscape",
         "sea"
       ],
-      "src": "assets/images/boston-light.jpg",
       "thumb": "assets/images/thumbs/boston-light.jpg",
       "alt": "2026 06 20 Dsc01410 Edited",
-      "width": 8003,
-      "height": 5335
+      "width": 1,
+      "height": 1
     },
     {
       "title": "The tip of Nantasket",
@@ -240,11 +226,10 @@
         "sea",
         "beach"
       ],
-      "src": "assets/images/the-tip-of-nantasket.jpg",
       "thumb": "assets/images/thumbs/the-tip-of-nantasket.jpg",
       "alt": "2026 06 20 Dsc01427 Edited",
-      "width": 9504,
-      "height": 6336
+      "width": 1,
+      "height": 1
     },
     {
       "title": "Sandy Nantasket Flats",
@@ -256,11 +241,10 @@
         "sea",
         "beach"
       ],
-      "src": "assets/images/sandy-nantasket-flats.jpg",
       "thumb": "assets/images/thumbs/sandy-nantasket-flats.jpg",
       "alt": "2026 06 20 Dsc01437 Edited",
-      "width": 9504,
-      "height": 6336
+      "width": 1,
+      "height": 1
     },
     {
       "title": "The ghost of Paragon Park",
@@ -272,11 +256,10 @@
         "sea",
         "beach"
       ],
-      "src": "assets/images/the-ghost-of-paragon-park.jpg",
       "thumb": "assets/images/thumbs/the-ghost-of-paragon-park.jpg",
       "alt": "2026 06 20 Dsc01444 Edited",
-      "width": 9504,
-      "height": 6336
+      "width": 1,
+      "height": 1
     },
     {
       "title": "Reflecting on the Greenway",
@@ -287,11 +270,10 @@
         "city",
         "landscape"
       ],
-      "src": "assets/images/reflecting-on-the-greenway.jpg",
       "thumb": "assets/images/thumbs/reflecting-on-the-greenway.jpg",
       "alt": "Dsc01475 Edited",
-      "width": 2454,
-      "height": 4364
+      "width": 1,
+      "height": 1
     }
   ]
 }

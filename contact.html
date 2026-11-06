@@ -4,53 +4,74 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Contact - Luke Boppart</title>
-    <link rel="icon" href="assets/icons/page-icon.svg" type="image/svg+xml">
-    <link rel="stylesheet" href="css/styles.css?v=modernmaker-3">
+    <title>Contact — Luke Boppart</title>
+    <meta name="description" content="Get in touch with Luke Boppart by email, or find him on LinkedIn, GitHub, YouTube and Instagram.">
+    <link rel="canonical" href="https://lukeboppart.com/contact.html">
+    <meta property="og:type" content="website">
+    <meta property="og:site_name" content="Luke Boppart">
+    <meta property="og:title" content="Contact — Luke Boppart">
+    <meta property="og:description" content="Get in touch with Luke Boppart by email, or find him on LinkedIn, GitHub, YouTube and Instagram.">
+    <meta property="og:url" content="https://lukeboppart.com/contact.html">
+    <meta property="og:image" content="https://lukeboppart.com/assets/images/og.png">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta property="og:image:alt" content="Luke Boppart: engineer working on 3D printing and slicer software, with a bucket of parts in the build chamber.">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:image" content="https://lukeboppart.com/assets/images/og.png">
+    <meta name="theme-color" content="#0E0F10">
+    <link rel="icon" href="assets/icons/favicon.svg" type="image/svg+xml">
+    <link rel="icon" href="assets/icons/icon-32.png" type="image/png" sizes="32x32">
+    <link rel="apple-touch-icon" href="assets/icons/apple-touch-icon.png">
+    <link rel="preload" href="assets/fonts/schibsted-grotesk-var.woff" as="font" type="font/woff" crossorigin>
+    <link rel="preload" href="assets/fonts/jetbrains-mono-var.woff" as="font" type="font/woff" crossorigin>
+    <link rel="stylesheet" href="css/styles.css?v=chamber-4">
 </head>
 
 <body class="contact-page">
-    <div class="container">
-        <header id="header-placeholder"></header>
-        <main>
-            <section class="page-intro">
-                <p class="eyebrow">Contact</p>
-                <h2>Find me around the web.</h2>
-                <p>Best places to follow projects, photos, and experiments.</p>
-            </section>
+    <a class="skip-link" href="#main">Skip to content</a>
+    <header class="topbar">
+        <div class="wrap">
+            <a class="brand" href="index.html"><span class="brand-mark" aria-hidden="true">LB</span>Luke Boppart</a>
+            <nav class="site-nav" aria-label="Primary navigation">
+                <a href="index.html#work">Work</a>
+                <a href="fun.html">Lab</a>
+                <a href="gallery.html">Gallery</a>
+                <a href="notebook.html">Notebook</a>
+                <a href="contact.html" aria-current="page">Contact</a>
+            </nav>
+            <p class="status">On hiatus · open to the next challenge</p>
+        </div>
+    </header>
 
-            <div class="contact-links">
-                <a href="https://linkedin.com/in/luke-boppart-592302190/" target="_blank" class="contact-link">
-                    <img src="assets/icons/linkedin.svg" alt="LinkedIn" />
-                    LinkedIn
-                </a>
-                <a href="https://github.com/lukewarm-h2o" target="_blank" class="contact-link">
-                    <img src="assets/icons/github.svg" alt="GitHub" />
-                    GitHub
-                </a>
-                <a href="https://youtube.com/@lukeboppart5860" target="_blank" class="contact-link">
-                    <img src="assets/icons/youtube.svg" alt="YouTube" />
-                    YouTube
-                </a>
-                <a href="https://instagram.com/luke_boppart" target="_blank" class="contact-link">
-                    <img src="assets/icons/instagram.svg" alt="Instagram" />
-                    Instagram
-                </a>
+    <main id="main">
+        <section class="page-intro">
+            <div class="wrap">
+                <p class="eyebrow">Contact</p>
+                <h1 class="page-title">Say hello.</h1>
+                <p class="page-lede">Happy to talk shop, 3D printing, slicers, or the next grand challenge.</p>
             </div>
-        </main>
-        <footer>
-            &copy; 2026 Luke Boppart. Built with love.
-        </footer>
-        <script>
-            fetch('/partials/header.html')
-                .then(res => res.text())
-                .then(html => {
-                    document
-                        .getElementById('header-placeholder')
-                        .innerHTML = html;
-                });
-        </script>
-    </div>
+        </section>
+        <section class="layer" >
+            <div class="wrap">
+                <div class="layer-head"><span><span class="n">Layer 01</span>Email and elsewhere</span></div>
+                <a class="contact-big" href="mailto:luke.boppart@gmail.com">luke.boppart@gmail.com →</a>
+                <div class="social-row">
+                <a href="https://linkedin.com/in/luke-boppart-592302190/" target="_blank" rel="noopener noreferrer">LinkedIn</a>
+                <a href="https://github.com/lukewarm-h2o" target="_blank" rel="noopener noreferrer">GitHub</a>
+                <a href="https://youtube.com/@lukeboppart5860" target="_blank" rel="noopener noreferrer">YouTube</a>
+                <a href="https://instagram.com/luke_boppart" target="_blank" rel="noopener noreferrer">Instagram</a>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <div class="wrap">
+            <span>&copy; 2026 Luke Boppart. Built with love.</span>
+            <span>Set in Schibsted Grotesk &amp; JetBrains Mono</span>
+        </div>
+    </footer>
+    <script src="js/zrail.js" defer></script>
 </body>
 
 </html>

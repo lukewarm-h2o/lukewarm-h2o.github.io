@@ -4,66 +4,98 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Gallery - Luke Boppart</title>
-    <link rel="icon" href="assets/icons/page-icon.svg" type="image/svg+xml">
-    <link rel="stylesheet" href="css/styles.css?v=gallery-albums-1">
+    <title>Gallery — Luke Boppart</title>
+    <meta name="description" content="Photography and travel albums by Luke Boppart, a rotating selection from his public SmugMug galleries.">
+    <link rel="canonical" href="https://lukeboppart.com/gallery.html">
+    <meta property="og:type" content="website">
+    <meta property="og:site_name" content="Luke Boppart">
+    <meta property="og:title" content="Gallery — Luke Boppart">
+    <meta property="og:description" content="Photography and travel albums by Luke Boppart, a rotating selection from his public SmugMug galleries.">
+    <meta property="og:url" content="https://lukeboppart.com/gallery.html">
+    <meta property="og:image" content="https://lukeboppart.com/assets/images/og.png">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta property="og:image:alt" content="Luke Boppart: engineer working on 3D printing and slicer software, with a bucket of parts in the build chamber.">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:image" content="https://lukeboppart.com/assets/images/og.png">
+    <meta name="theme-color" content="#0E0F10">
+    <link rel="icon" href="assets/icons/favicon.svg" type="image/svg+xml">
+    <link rel="icon" href="assets/icons/icon-32.png" type="image/png" sizes="32x32">
+    <link rel="apple-touch-icon" href="assets/icons/apple-touch-icon.png">
+    <link rel="preload" href="assets/fonts/schibsted-grotesk-var.woff" as="font" type="font/woff" crossorigin>
+    <link rel="preload" href="assets/fonts/jetbrains-mono-var.woff" as="font" type="font/woff" crossorigin>
+    <link rel="stylesheet" href="css/styles.css?v=chamber-4">
 </head>
 
 <body class="gallery-page">
-    <div class="container">
-        <header id="header-placeholder"></header>
-        <main>
-            <section class="gallery-hero">
+    <a class="skip-link" href="#main">Skip to content</a>
+    <header class="topbar">
+        <div class="wrap">
+            <a class="brand" href="index.html"><span class="brand-mark" aria-hidden="true">LB</span>Luke Boppart</a>
+            <nav class="site-nav" aria-label="Primary navigation">
+                <a href="index.html#work">Work</a>
+                <a href="fun.html">Lab</a>
+                <a href="gallery.html" aria-current="page">Gallery</a>
+                <a href="notebook.html">Notebook</a>
+                <a href="contact.html">Contact</a>
+            </nav>
+            <p class="status">On hiatus · open to the next challenge</p>
+        </div>
+    </header>
+
+    <main id="main">
+        <section class="page-intro">
+            <div class="wrap">
+                <p class="eyebrow">Photography / Travel log</p>
+                <h1 class="page-title">Frames.</h1>
+                <p class="page-lede">Images from projects, places, and ordinary moments: a rotating selection from the albums below. <span class="muted mono" style="font-size: 0.8rem; white-space: nowrap"><span id="photo-count">—</span> photos · <span id="album-count">—</span> albums</span></p>
+            </div>
+        </section>
+
+        <section class="layer">
+            <div class="wrap">
+                <p class="album-status" id="gallery-status" role="status">Loading photos…</p>
+                <div class="stage" id="stage" role="group" aria-label="Rotating selection of photos"></div>
+                <div class="filters" id="filters" role="group" aria-label="Filter photos by album"></div>
+                <div class="masonry" id="masonry"></div>
+            </div>
+        </section>
+
+        <section class="layer">
+            <div class="wrap">
+                <div class="layer-head"><span><span class="n">Albums</span>On SmugMug</span><a href="https://lukeboppart.smugmug.com/browse" target="_blank" rel="noopener noreferrer">All albums →</a></div>
+                <div class="albums" id="albums"></div>
+            </div>
+        </section>
+    </main>
+
+    <div class="lightbox" id="lightbox" role="dialog" aria-modal="true" aria-label="Photo viewer">
+        <div class="lightbox-panel">
+            <img alt="">
+            <div class="lightbox-meta">
                 <div>
-                    <p class="eyebrow">Photography / Travel Log</p>
-                    <h2>Frames from life, and small detours.</h2>
-                    <p>Collected images from projects, places, and ordinary moments.</p>
+                    <p class="eyebrow" data-count></p>
+                    <h2></h2>
+                    <p></p>
                 </div>
-                <div class="gallery-stats" aria-label="Gallery summary">
-                    <div class="gallery-stat">
-                        <strong id="photo-count">—</strong>
-                        <span>Public photos</span>
-                    </div>
-                    <div class="gallery-stat">
-                        <strong id="collection-count">—</strong>
-                        <span>Public albums</span>
-                    </div>
+                <div class="lightbox-actions">
+                    <button type="button" data-prev aria-label="Previous photo">←</button>
+                    <button type="button" data-next aria-label="Next photo">→</button>
+                    <a class="btn" data-link target="_blank" rel="noopener noreferrer" hidden>Open on SmugMug</a>
+                    <button type="button" data-close>Close</button>
                 </div>
-            </section>
-
-            <section class="gallery-section" aria-labelledby="smugmug-heading">
-                <div class="section-heading">
-                    <div>
-                        <p class="eyebrow">Photo albums</p>
-                        <h2 id="smugmug-heading">Browse the collections</h2>
-                        <p>Choose a collection to explore the full gallery on SmugMug.</p>
-                    </div>
-                    <a href="https://lukeboppart.smugmug.com/browse">All albums →</a>
-                </div>
-                <p class="album-status" id="smugmug-status" role="status">Loading albums…</p>
-                <div class="collection-grid" id="smugmug-collections" aria-label="Public photo albums"></div>
-            </section>
-
-        </main>
-        <footer>
-            &copy; 2026 Luke Boppart. Built with love.
-        </footer>
-        <script type="module" src="js/smugmug.js"></script>
-        <script>
-            fetch('/partials/header.html')
-                .then(response => {
-                    if (!response.ok) throw new Error('Navigation unavailable');
-                    return response.text();
-                })
-                .then(html => { document.getElementById('header-placeholder').innerHTML = html; })
-                .catch(() => {
-                    const link = document.createElement('a');
-                    link.href = '/';
-                    link.textContent = 'Luke Boppart — Home';
-                    document.getElementById('header-placeholder').replaceChildren(link);
-                });
-        </script>
+            </div>
+        </div>
     </div>
+
+    <footer>
+        <div class="wrap">
+            <span>&copy; 2026 Luke Boppart. Built with love.</span>
+            <span>Set in Schibsted Grotesk &amp; JetBrains Mono</span>
+        </div>
+    </footer>
+    <script type="module" src="js/gallery.js"></script>
+    <script src="js/zrail.js" defer></script>
 </body>
 
 </html>
