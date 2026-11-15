@@ -1,6 +1,6 @@
 # Luke's website
 
-Static HTML, CSS, and JavaScript hosted on GitHub Pages. No build step or Node.js is required.
+Static HTML, CSS, and JavaScript hosted on GitHub Pages. No build step or Node.js is required to preview or publish; only rebuilding the home page scene needs Node.js.
 
 ## Preview locally
 
@@ -15,7 +15,8 @@ Open http://127.0.0.1:8000 in your browser. Save edits and refresh to see them. 
 
 ## Edit the site
 
-- `index.html`: home page (hero bucket is `js/hero.js`)
+- `index.html`: home page, a 3D walk down Stromboli (scene is `js/garden.js`; see [garden/README.md](garden/README.md))
+- `classic.html`: the earlier home page, kept as a plain version (hero bucket is `js/hero.js`)
 - `fun.html` (the Lab), `gallery.html`, `notebook.html`, `contact.html`: other pages
 - `info.html`: redirect to the Notebook, kept so old links work
 - `js/photos.js`, `js/gallery.js`: public SmugMug photo feed, rotating stage and lightbox

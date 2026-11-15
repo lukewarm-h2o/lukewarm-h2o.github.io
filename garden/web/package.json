@@ -1,0 +1,12 @@
+{
+  "name": "stromboli-garden",
+  "private": true,
+  "description": "Source for js/garden.js, the 3D home page scene.",
+  "scripts": {
+    "build": "esbuild main.js --bundle --minify --format=iife --outfile=../../js/garden.js"
+  },
+  "devDependencies": {
+    "esbuild": "^0.28.2",
+    "three": "^0.170.0"
+  }
+}

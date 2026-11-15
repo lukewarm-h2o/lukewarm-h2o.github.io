@@ -1,0 +1,68 @@
+/* Stromboli Garden home page: a fixed 3D scene (js/garden.js) behind ordinary content cards.
+   Shared tokens, type and components come from styles.css. */
+.garden-page { background: #0a0c1c; }
+#scene { cursor: grab; display: block; height: 100%; inset: 0; position: fixed; touch-action: pan-y; width: 100%; z-index: 0; }
+.is-looking #scene { cursor: grabbing; }
+.no-gl #scene, .no-gl #ruler, .no-gl [data-detour], .no-gl .gl-only { display: none; }
+.has-gl .no-gl-only { display: none; }
+.garden-page .topbar, .garden-page main, .garden-page footer { position: relative; z-index: 1; }
+.garden-page .topbar, .garden-page footer { -webkit-backdrop-filter: blur(8px); backdrop-filter: blur(8px); background: rgba(14, 15, 16, 0.6); }
+.garden-page main { pointer-events: none; transition: opacity 0.5s; }
+.is-detour .garden-page main, .is-detour .garden-page .topbar { opacity: 0; }
+
+.stop { align-items: center; display: flex; min-height: 125vh; padding: 0 var(--gutter); }
+.stop:first-child { align-items: flex-start; min-height: 105vh; padding-top: clamp(1.5rem, 8vh, 5rem); }
+.stop.right { justify-content: flex-end; padding-right: calc(var(--gutter) + 48px); }
+.card {
+    -webkit-backdrop-filter: blur(8px); backdrop-filter: blur(8px); background: rgba(14, 15, 16, 0.8);
+    border: 1px solid var(--line-strong); padding: clamp(1.1rem, 2.4vw, 1.9rem); pointer-events: auto; width: min(560px, 100%);
+}
+.card .layer-head { border-top: 0; margin-bottom: 1rem; padding-top: 0; }
+.card h2 { font-size: clamp(1.5rem, 3vw, 2.1rem); font-weight: 600; margin-bottom: 0.75rem; }
+.card p { color: var(--soft); }
+.card .hero-name { font-size: clamp(3.2rem, 8vw, 6.5rem); margin-top: 1.1rem; }
+.card .hero-lede { font-size: clamp(1rem, 1.4vw, 1.2rem); margin-top: 1.4rem; }
+.card .btn-row { margin-top: 1.4rem; }
+.card .hint { color: var(--muted); font-family: var(--font-mono); font-size: 0.72rem; letter-spacing: 0.06em; margin-top: 1.4rem; text-transform: uppercase; }
+.card .index-row { gap: 1.2rem; padding: 0.8rem 0; }
+.card .index-row .txt { font-size: clamp(1.1rem, 1.9vw, 1.45rem); }
+.card .work-row { padding: 1rem 0; }
+.card .work-title { font-size: clamp(1.35rem, 2.6vw, 1.9rem); }
+.card .work-desc { font-size: 0.97rem; }
+.card .exp-row strong { font-size: 1.35rem; }
+.card .index-row:last-child, .card .work-row:last-child { border-bottom: 0; }
+.card .now-note { border-left: 2px solid var(--accent); margin-top: 1.1rem; padding-left: 0.9rem; }
+.card .now-note h3 { color: var(--accent); font-family: var(--font-mono); font-size: 0.72rem; font-weight: 500; letter-spacing: 0.1em; margin-bottom: 0.3rem; text-transform: uppercase; }
+.card .contact-big { font-size: clamp(1.25rem, 3.4vw, 2.1rem); letter-spacing: -0.03em; margin-top: 0.25rem; }
+.card .social-row { margin-top: 1.1rem; }
+.frames { display: grid; gap: 6px; grid-template-columns: repeat(4, 1fr); margin: 0.25rem 0 0.4rem; }
+.frames a { display: block; }
+.frames img { aspect-ratio: 1 / 1; border: 1px solid var(--line); display: block; height: auto; object-fit: cover; width: 100%; }
+
+/* altitude ruler: 924 m at the crater down to 0 at the sea */
+#ruler { bottom: 28px; color: var(--text); font: 0.65rem var(--font-mono); pointer-events: none; position: fixed; right: 8px; text-shadow: 0 1px 3px rgba(0, 0, 0, 0.8); top: 92px; width: 46px; z-index: 2; }
+#ruler .rail { background: repeating-linear-gradient(to bottom, var(--line-strong) 0 1px, transparent 1px 5%); border-right: 1px solid var(--line-strong); bottom: 0; position: absolute; right: 0; top: 0; width: 8px; }
+#mark { align-items: center; display: flex; gap: 6px; justify-content: flex-end; position: absolute; right: 0; transform: translateY(-50%); white-space: nowrap; width: 100%; }
+#mark::after { background: var(--accent); content: ""; height: 2px; width: 16px; }
+#alt { background: var(--bg); border: 1px solid var(--accent); color: var(--accent); letter-spacing: 0.06em; padding: 1px 6px; text-shadow: none; }
+
+/* garden gallery detour panel */
+#detour {
+    -webkit-backdrop-filter: blur(8px); backdrop-filter: blur(8px); background: rgba(14, 15, 16, 0.88); border: 1px solid var(--line-strong);
+    bottom: clamp(12px, 4vh, 40px); left: 50%; padding: 0.9rem 1.2rem 1rem; position: fixed; transform: translateX(-50%); width: min(640px, calc(100% - 24px)); z-index: 5;
+}
+#detour .layer-head { border-top: 0; margin-bottom: 0.7rem; padding-top: 0; }
+#detour h2 { font-size: 1.35rem; font-weight: 600; }
+#detour-note { color: var(--soft); font-size: 0.95rem; margin-top: 0.4rem; }
+#detour .btn-row { gap: 0.5rem; margin-top: 0.8rem; }
+#detour .btn { font-size: 0.85rem; min-height: 40px; padding: 0.55rem 0.85rem; }
+
+@media (max-width: 640px) {
+    .stop, .stop.right { align-items: flex-end; padding: 0 12px 8vh; padding-right: 40px; }
+    .stop:first-child { align-items: flex-start; padding-top: 1rem; }
+    .frames { grid-template-columns: repeat(3, 1fr); }
+    .frames a:nth-child(4) { display: none; }
+    #ruler { right: 4px; width: 30px; }
+    #alt { display: none; }
+}
+@media (prefers-reduced-motion: reduce) { .garden-page main { transition: none; } }
