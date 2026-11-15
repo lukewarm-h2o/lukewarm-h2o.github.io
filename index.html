@@ -25,23 +25,17 @@
     <link rel="preload" href="assets/fonts/schibsted-grotesk-var.woff" as="font" type="font/woff" crossorigin>
     <link rel="preload" href="assets/fonts/jetbrains-mono-var.woff" as="font" type="font/woff" crossorigin>
     <link rel="stylesheet" href="css/styles.css?v=chamber-10">
-    <script type="importmap">
-    {
-      "imports": {
-        "three": "./js/vendor/three.module.js",
-        "cannon": "./js/vendor/cannon-es.js"
-      }
-    }
-    </script>
+    <link rel="stylesheet" href="css/garden.css?v=garden-1">
 </head>
 
-<body class="home-page">
+<body class="home-page garden-page">
     <a class="skip-link" href="#main">Skip to content</a>
+    <canvas id="scene" aria-hidden="true"></canvas>
     <header class="topbar">
         <div class="wrap">
             <a class="brand" href="index.html"><span class="brand-mark" aria-hidden="true">LB</span>Luke Boppart</a>
             <nav class="site-nav" aria-label="Primary navigation">
-                <a href="index.html#work" aria-current="page">Work</a>
+                <a href="#work" aria-current="page">Work</a>
                 <a href="fun.html">Lab</a>
                 <a href="gallery.html">Gallery</a>
                 <a href="notebook.html">Notebook</a>
@@ -50,44 +44,25 @@
             <p class="status">On hiatus · open to the next challenge</p>
         </div>
     </header>
+    <div id="ruler" aria-hidden="true"><div class="rail"></div><div id="mark"><span id="alt">924 m</span></div></div>
 
     <main id="main">
-        <section class="hero">
-            <div class="wrap">
-                <div class="hero-grid">
-                    <div class="hero-copy">
-                        <p class="eyebrow">Engineer / Additive Manufacturing</p>
-                        <h1 class="hero-name">Luke<br>Boppart</h1>
-                        <p class="hero-lede">Engineer at the intersection of hardware and software, from tuning machines to developing and optimizing 3D slicers. Well-designed tools empower better results.</p>
-                        <div class="btn-row">
-                            <a class="btn" href="#work">See selected work</a>
-                            <a class="btn btn-ghost" href="#contact">Say hello</a>
-                        </div>
-                    </div>
-                    <figure class="hero-art">
-                        <div class="bucket-hero" id="bucket-hero" role="group" aria-label="Interactive 3D bucket of parts. Drag a part to move it.">
-                        <svg class="bucket-fallback" viewBox="30 80 460 420" aria-hidden="true">
-                            <polygon points="60,370 260,270 260,110 60,210" fill="rgba(236,234,228,0.03)" stroke="rgba(236,234,228,0.35)" stroke-width="1.2"/>
-                            <polygon points="260,270 460,370 460,210 260,110" fill="rgba(236,234,228,0.05)" stroke="rgba(236,234,228,0.35)" stroke-width="1.2"/>
-                            <polygon points="260,470 60,370 260,270 460,370" fill="#151618" stroke="rgba(236,234,228,0.5)" stroke-width="1.2"/>
-                            <line x1="60" y1="370" x2="60" y2="210" stroke="rgba(236,234,228,0.35)" stroke-width="1.2"/>
-                            <line x1="460" y1="370" x2="460" y2="210" stroke="rgba(236,234,228,0.35)" stroke-width="1.2"/>
-                            <polygon points="230,295 300,330 230,365 160,330" fill="#2A2B2D" stroke="#ECEAE4" stroke-width="1.2"/>
-                            <polygon points="160,330 230,365 230,435 160,400" fill="#1B1C1E" stroke="#ECEAE4" stroke-width="1.2"/>
-                            <polygon points="230,365 300,330 300,400 230,435" fill="#222325" stroke="#ECEAE4" stroke-width="1.2"/>
-                            <polygon points="330,325 380,350 330,375 280,350" fill="#FF7A50" stroke="#0E0F10" stroke-width="1.2"/>
-                            <polygon points="280,350 330,375 330,425 280,400" fill="#FF5A2B" stroke="#0E0F10" stroke-width="1.2"/>
-                            <polygon points="330,375 380,350 380,400 330,425" fill="#D9461C" stroke="#0E0F10" stroke-width="1.2"/>
-                        </svg>
-                        </div>
-                        <figcaption class="caption"><span>Live: drag the parts</span><span>three.js + cannon-es</span></figcaption>
-                    </figure>
+        <section class="stop" data-z="0">
+            <div class="card">
+                <p class="eyebrow">Engineer / Additive Manufacturing</p>
+                <h1 class="hero-name">Luke<br>Boppart</h1>
+                <p class="hero-lede">Engineer at the intersection of hardware and software, from tuning machines to developing and optimizing 3D slicers. Well-designed tools empower better results.</p>
+                <div class="btn-row">
+                    <a class="btn" href="#work">See selected work</a>
+                    <a class="btn btn-ghost" href="#contact">Say hello</a>
                 </div>
+                <p class="hint gl-only">Scroll to walk from the crater down to the sea · drag to look around</p>
+                <p class="hint no-gl-only">3D view unavailable in this browser · <a href="classic.html">classic version</a></p>
             </div>
         </section>
 
-        <section class="layer">
-            <div class="wrap">
+        <section class="stop right" data-z="-52">
+            <div class="card">
                 <div class="layer-head"><span><span class="n">Layer 06</span>Focus areas</span></div>
                 <ul class="index-list">
                     <li class="index-row"><span class="num">01</span><span class="txt">Selective Laser Sintering (SLS)</span></li>
@@ -98,133 +73,134 @@
             </div>
         </section>
 
-        <section class="layer" id="work">
-            <div class="wrap">
+        <section class="stop" id="work" data-z="-108">
+            <div class="card">
                 <div class="layer-head"><span><span class="n">Layer 05</span>Selected work</span><a href="notebook.html">Notebook →</a></div>
-                <div class="work-wrap">
-                    <div class="work-list">
-                        <a class="work-row" href="notebook.html#micronics">
-                            <span><span class="work-title">Micronics</span><span class="work-desc">Co-founded a company building a desktop SLS 3D printer. Acquired by Formlabs in 2024.</span></span>
-                            <span class="work-meta">Co-founder · 2021–2024</span>
-                        </a>
-                        <a class="work-row" href="notebook.html#formlabs">
-                            <span><span class="work-title">PreForm</span><span class="work-desc">Software for preparing prints on Formlabs printers, including model measurement tools and print-job workflows.</span></span>
-                            <span class="work-meta">Formlabs · 2024–2026</span>
-                        </a>
-                        <a class="work-row" href="fun.html">
-                            <span><span class="work-title">Physics-based placement</span><span class="work-desc">Drop in STL models and watch them settle in a bucket with box physics. Try it in the Lab.</span></span>
-                            <span class="work-meta">Personal project</span>
-                        </a>
-                    </div>
-                    <figure class="work-preview">
-                        <img src="assets/images/thumbs/IMG_0461.jpg" alt="Wide view of a 3D printed part on a workshop bench" loading="lazy">
-                        <figcaption class="caption"><span>From the bench</span></figcaption>
-                    </figure>
+                <div class="work-list">
+                    <a class="work-row" href="notebook.html#micronics">
+                        <span><span class="work-title">Micronics</span><span class="work-desc">Co-founded a company building a desktop SLS 3D printer. Acquired by Formlabs in 2024.</span></span>
+                        <span class="work-meta">Co-founder · 2021–2024</span>
+                    </a>
+                    <a class="work-row" href="notebook.html#formlabs">
+                        <span><span class="work-title">PreForm</span><span class="work-desc">Software for preparing prints on Formlabs printers, including model measurement tools and print-job workflows.</span></span>
+                        <span class="work-meta">Formlabs · 2024–2026</span>
+                    </a>
+                    <a class="work-row" href="fun.html">
+                        <span><span class="work-title">Physics-based placement</span><span class="work-desc">Drop in STL models and watch them settle in a bucket with box physics. Try it in the Lab.</span></span>
+                        <span class="work-meta">Personal project</span>
+                    </a>
                 </div>
             </div>
         </section>
 
-        <section class="layer">
-            <div class="wrap">
-                <div class="layer-head"><span><span class="n">Layer 04</span>Lab</span><a href="fun.html">Open the Lab →</a></div>
-                <div class="lab-panel">
-                    <div class="lab-copy">
-                        <div>
-                            <h2>Drop an STL.<br>Watch it settle.</h2>
-                            <p style="margin-top: 1rem">Box physics, drag to interact, export the packed scene as STL. It runs entirely in your browser.</p>
-                        </div>
-                        <div class="btn-row"><a class="btn" href="fun.html">Open the Lab</a></div>
-                    </div>
-                    <div class="lab-art" aria-hidden="true">
-                        <svg viewBox="0 0 520 520">
-                            <polygon points="60,370 260,270 260,110 60,210" fill="rgba(236,234,228,0.03)" stroke="rgba(236,234,228,0.35)" stroke-width="1.2"/>
-                            <polygon points="260,270 460,370 460,210 260,110" fill="rgba(236,234,228,0.05)" stroke="rgba(236,234,228,0.35)" stroke-width="1.2"/>
-                            <polygon points="260,470 60,370 260,270 460,370" fill="#0E0F10" stroke="rgba(236,234,228,0.5)" stroke-width="1.2"/>
-                            <polygon points="230,295 300,330 230,365 160,330" fill="#2A2B2D" stroke="#ECEAE4" stroke-width="1.2"/>
-                            <polygon points="160,330 230,365 230,435 160,400" fill="#1B1C1E" stroke="#ECEAE4" stroke-width="1.2"/>
-                            <polygon points="230,365 300,330 300,400 230,435" fill="#222325" stroke="#ECEAE4" stroke-width="1.2"/>
-                            <polygon points="330,325 380,350 330,375 280,350" fill="#FF7A50" stroke="#0E0F10" stroke-width="1.2"/>
-                            <polygon points="280,350 330,375 330,425 280,400" fill="#FF5A2B" stroke="#0E0F10" stroke-width="1.2"/>
-                            <polygon points="330,375 380,350 380,400 330,425" fill="#D9461C" stroke="#0E0F10" stroke-width="1.2"/>
-                        </svg>
-                    </div>
+        <section class="stop right" data-z="-134">
+            <div class="card">
+                <div class="layer-head"><span><span class="n">Layer 04</span>Experience</span></div>
+                <div class="exp-list">
+                    <div class="exp-row"><div><strong>Formlabs</strong><span class="role">PreForm Software Engineer, then Software Engineer</span></div><span>2024 — 2026</span></div>
+                    <div class="exp-row"><div><strong>Micronics</strong><span class="role">Co-founder</span></div><span>2021 — 2024</span></div>
+                </div>
+                <div class="now-note">
+                    <h3>Now</h3>
+                    <p>On hiatus, exploring the world, and looking for the next grand challenge.</p>
                 </div>
             </div>
         </section>
 
-        <section class="layer">
-            <div class="filmstrip-wrap">
+        <section class="stop" data-z="-157">
+            <div class="card">
                 <div class="layer-head"><span><span class="n">Layer 03</span>Frames</span><a href="gallery.html">All albums →</a></div>
-                <div class="filmstrip" id="filmstrip" tabindex="0" aria-label="Photo strip, scrolls horizontally">
-                <a href="gallery.html"><img src="assets/images/thumbs/hull-shoreline.jpg" alt="Hull shoreline" loading="lazy"></a>
-                <a href="gallery.html"><img src="assets/images/thumbs/reflecting-on-the-greenway.jpg" alt="Reflecting on the Greenway" loading="lazy"></a>
-                <a href="gallery.html"><img src="assets/images/thumbs/boston-light.jpg" alt="Boston Light" loading="lazy"></a>
-                <a href="gallery.html"><img src="assets/images/thumbs/the-tip-of-nantasket.jpg" alt="The tip of Nantasket" loading="lazy"></a>
-                <a href="gallery.html"><img src="assets/images/thumbs/the-ghost-of-paragon-park.jpg" alt="The ghost of Paragon Park" loading="lazy"></a>
-                <a href="gallery.html"><img src="assets/images/thumbs/camp.jpg" alt="Camp" loading="lazy"></a>
+                <div class="frames" id="frames">
+                    <a href="gallery.html"><img src="assets/images/thumbs/hull-shoreline.jpg" alt="Hull shoreline" loading="lazy"></a>
+                    <a href="gallery.html"><img src="assets/images/thumbs/boston-light.jpg" alt="Boston Light" loading="lazy"></a>
+                    <a href="gallery.html"><img src="assets/images/thumbs/the-ghost-of-paragon-park.jpg" alt="The ghost of Paragon Park" loading="lazy"></a>
+                    <a href="gallery.html"><img src="assets/images/thumbs/camp.jpg" alt="Camp" loading="lazy"></a>
+                </div>
+                <div class="btn-row">
+                    <a class="btn" href="gallery.html">Open the gallery</a>
+                    <button class="btn btn-ghost" type="button" data-detour="start">Walk through the garden gallery</button>
                 </div>
             </div>
         </section>
 
-        <section class="layer">
-            <div class="wrap">
-                <div class="layer-head"><span><span class="n">Layer 02</span>Experience</span></div>
-                <div class="exp-wrap">
-                    <div class="exp-list">
-                        <div class="exp-row"><div><strong>Formlabs</strong><span class="role">PreForm Software Engineer, then Software Engineer</span></div><span>2024 — 2026</span></div>
-                        <div class="exp-row"><div><strong>Micronics</strong><span class="role">Co-founder</span></div><span>2021 — 2024</span></div>
-                    </div>
-                    <aside class="now" aria-label="Now">
-                        <h3>Now</h3>
-                        <p>On hiatus, exploring the world, and looking for the next grand challenge.</p>
-                    </aside>
-                </div>
+        <section class="stop right" data-z="-181">
+            <div class="card">
+                <div class="layer-head"><span><span class="n">Layer 02</span>Lab</span><a href="fun.html">Open the Lab →</a></div>
+                <h2>Drop an STL.<br>Watch it settle.</h2>
+                <p>Box physics, drag to interact, export the packed scene as STL. It runs entirely in your browser.</p>
+                <div class="btn-row"><a class="btn" href="fun.html">Open the Lab</a></div>
             </div>
         </section>
 
-        <section class="layer" id="contact">
-            <div class="wrap">
+        <section class="stop" id="contact" data-z="-210">
+            <div class="card">
                 <div class="layer-head"><span><span class="n">Layer 01</span>Contact</span></div>
                 <a class="contact-big" href="mailto:luke.boppart@gmail.com">luke.boppart@gmail.com →</a>
                 <div class="social-row">
-                <a href="https://linkedin.com/in/luke-boppart-592302190/" target="_blank" rel="noopener noreferrer">LinkedIn</a>
-                <a href="https://github.com/lukewarm-h2o" target="_blank" rel="noopener noreferrer">GitHub</a>
-                <a href="https://youtube.com/@lukeboppart5860" target="_blank" rel="noopener noreferrer">YouTube</a>
-                <a href="https://instagram.com/luke_boppart" target="_blank" rel="noopener noreferrer">Instagram</a>
+                    <a href="https://linkedin.com/in/luke-boppart-592302190/" target="_blank" rel="noopener noreferrer">LinkedIn</a>
+                    <a href="https://github.com/lukewarm-h2o" target="_blank" rel="noopener noreferrer">GitHub</a>
+                    <a href="https://youtube.com/@lukeboppart5860" target="_blank" rel="noopener noreferrer">YouTube</a>
+                    <a href="https://instagram.com/luke_boppart" target="_blank" rel="noopener noreferrer">Instagram</a>
                 </div>
             </div>
         </section>
     </main>
 
+    <div id="detour" role="region" aria-label="Garden gallery" aria-live="polite" hidden>
+        <div class="layer-head"><span><span class="n">Detour</span><span id="detour-album">Garden gallery</span></span><span id="detour-n">1 / 8</span></div>
+        <h2 id="detour-name">Untitled</h2>
+        <p id="detour-note"></p>
+        <div class="btn-row">
+            <button class="btn btn-ghost" type="button" data-detour="prev">← Previous</button>
+            <button class="btn" type="button" data-detour="next">Next photo →</button>
+            <button class="btn btn-ghost" type="button" data-detour="end">Back to the path</button>
+            <a class="btn btn-ghost" id="detour-link" href="gallery.html">Open gallery</a>
+        </div>
+    </div>
+
+    <!-- Photos hung in the garden gallery. The public album feed replaces these when it loads. -->
+    <script type="application/json" id="garden-photos">
+    [
+      {"src": "assets/images/thumbs/hull-shoreline.jpg", "title": "Hull Shoreline", "album": "New England", "caption": "the boats long for their chance to dip into the cool water and get off the rocky shore"},
+      {"src": "assets/images/thumbs/boston-light.jpg", "title": "Boston Light", "album": "New England", "caption": "Standing proud in the Boston harbor in various forms since 1716"},
+      {"src": "assets/images/thumbs/the-tip-of-nantasket.jpg", "title": "The tip of Nantasket", "album": "New England", "caption": "Nantaket beach was remarkable for its wide and flat shore. At the Allerton tip it is exceptionaly rocky but that gives way to expansive sandy flats further towards Atlantic"},
+      {"src": "assets/images/thumbs/camp.jpg", "title": "Camp", "album": "New England", "caption": "tucked behid the massive wave-breaking boulders is a small camp. free from watchfull eyes innocent chaos is allowed to burn bright"},
+      {"src": "assets/images/thumbs/the-ghost-of-paragon-park.jpg", "title": "The ghost of Paragon Park", "album": "New England", "caption": "Open from 1905 to 1984 Paragon Park was a jewel set on the shore of Nantasket. Fastforward to today this is the cheap copy propped up to quench the lingering thirst for the whimsy of an amusement park."},
+      {"src": "assets/images/thumbs/reflecting-on-the-greenway.jpg", "title": "Reflecting on the Greenway", "album": "New England", "caption": "I've never known a pre-BigDig Boston, which makes it tough to imagine the city without this snaking green connective tissue that joins together the NorthEnd, Finance-bro-land, and China Town"},
+      {"src": "assets/images/thumbs/IMG_0461.jpg", "title": "Long Build", "album": "Projects", "caption": "A wide view from the bench, with the print surface doing most of the talking."},
+      {"src": "assets/images/thumbs/IMG_2982.jpg", "title": "City Tile", "album": "Projects", "caption": "A city tile printed in white nylon, I can see my apartment from here."}
+    ]
+    </script>
+
     <footer>
         <div class="wrap">
             <span>&copy; 2026 Luke Boppart. Built with love.</span>
-            <span>Set in Schibsted Grotesk &amp; JetBrains Mono</span>
+            <span><a href="classic.html">Classic version</a> · Set in Schibsted Grotesk &amp; JetBrains Mono</span>
         </div>
     </footer>
 
-    <script type="module" src="js/hero.js"></script>
+    <script src="js/garden.js?v=garden-1" defer></script>
     <script type="module">
-        // Swap the static strip for a random assortment of high-quality photos from the public albums.
+        // Swap the static frames, and the photos in the garden gallery, for a random set from the public albums.
         import { loadFeed, shuffle } from './js/photos.js';
         loadFeed().then(feed => {
             if (!feed) return;
-            const photos = shuffle(feed.albums.flatMap(a => a.photos)).slice(0, 8);
+            const all = shuffle(feed.albums.flatMap(a => a.photos));
+            // The garden gallery takes eight; photos that can't be used as textures keep the built-in ones.
+            window.dispatchEvent(new CustomEvent('garden:photos', { detail: all.slice(0, 8) }));
+            const photos = all.slice(0, 4);
             if (photos.length < 3) return;
-            const strip = document.getElementById('filmstrip');
-            strip.replaceChildren(...photos.map(p => {
+            document.getElementById('frames').replaceChildren(...photos.map(p => {
                 const a = document.createElement('a');
                 a.href = p.url || 'gallery.html';
                 if (p.url) { a.target = '_blank'; a.rel = 'noopener noreferrer'; }
                 const img = document.createElement('img');
-                img.src = p.src; img.alt = p.alt || p.title || p.album; img.loading = 'lazy';
-                if (p.w && p.h) { img.width = p.w; img.height = p.h; }
+                img.src = p.thumb || p.src; img.alt = p.alt || p.title || p.album; img.loading = 'lazy';
                 a.append(img);
                 return a;
             }));
         });
     </script>
-    <script src="js/zrail.js" defer></script>
 </body>
 
 </html>

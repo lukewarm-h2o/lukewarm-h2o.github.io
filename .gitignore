@@ -6,3 +6,5 @@ incoming-gallery/
 data/smugmug.json
 _site/
 migration/
+garden/web/node_modules/
+*.blend1

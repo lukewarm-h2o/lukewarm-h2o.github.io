@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Luke Boppart — Additive Manufacturing Engineer</title>
+    <meta name="description" content="Luke Boppart is an engineer working on SLS 3D printing, slicer architecture, physics-based model placement and machine control software. Former co-founder of Micronics; PreForm software engineer at Formlabs.">
+    <link rel="canonical" href="https://lukeboppart.com/">
+    <meta name="robots" content="noindex">
+    <meta property="og:type" content="website">
+    <meta property="og:site_name" content="Luke Boppart">
+    <meta property="og:title" content="Luke Boppart — Additive Manufacturing Engineer">
+    <meta property="og:description" content="Luke Boppart is an engineer working on SLS 3D printing, slicer architecture, physics-based model placement and machine control software. Former co-founder of Micronics; PreForm software engineer at Formlabs.">
+    <meta property="og:url" content="https://lukeboppart.com/">
+    <meta property="og:image" content="https://lukeboppart.com/assets/images/og.png">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta property="og:image:alt" content="Luke Boppart: engineer working on 3D printing and slicer software, with a bucket of parts in the build chamber.">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:image" content="https://lukeboppart.com/assets/images/og.png">
+    <meta name="theme-color" content="#0E0F10">
+    <link rel="icon" href="assets/icons/favicon.svg" type="image/svg+xml">
+    <link rel="icon" href="assets/icons/icon-32.png" type="image/png" sizes="32x32">
+    <link rel="apple-touch-icon" href="assets/icons/apple-touch-icon.png">
+    <link rel="preload" href="assets/fonts/schibsted-grotesk-var.woff" as="font" type="font/woff" crossorigin>
+    <link rel="preload" href="assets/fonts/jetbrains-mono-var.woff" as="font" type="font/woff" crossorigin>
+    <link rel="stylesheet" href="css/styles.css?v=chamber-10">
+    <script type="importmap">
+    {
+      "imports": {
+        "three": "./js/vendor/three.module.js",
+        "cannon": "./js/vendor/cannon-es.js"
+      }
+    }
+    </script>
+</head>
+
+<body class="home-page">
+    <a class="skip-link" href="#main">Skip to content</a>
+    <header class="topbar">
+        <div class="wrap">
+            <a class="brand" href="index.html"><span class="brand-mark" aria-hidden="true">LB</span>Luke Boppart</a>
+            <nav class="site-nav" aria-label="Primary navigation">
+                <a href="#work" aria-current="page">Work</a>
+                <a href="fun.html">Lab</a>
+                <a href="gallery.html">Gallery</a>
+                <a href="notebook.html">Notebook</a>
+                <a href="contact.html">Contact</a>
+            </nav>
+            <p class="status">On hiatus · open to the next challenge</p>
+        </div>
+    </header>
+
+    <main id="main">
+        <section class="hero">
+            <div class="wrap">
+                <div class="hero-grid">
+                    <div class="hero-copy">
+                        <p class="eyebrow">Engineer / Additive Manufacturing</p>
+                        <h1 class="hero-name">Luke<br>Boppart</h1>
+                        <p class="hero-lede">Engineer at the intersection of hardware and software, from tuning machines to developing and optimizing 3D slicers. Well-designed tools empower better results.</p>
+                        <div class="btn-row">
+                            <a class="btn" href="#work">See selected work</a>
+                            <a class="btn btn-ghost" href="#contact">Say hello</a>
+                        </div>
+                    </div>
+                    <figure class="hero-art">
+                        <div class="bucket-hero" id="bucket-hero" role="group" aria-label="Interactive 3D bucket of parts. Drag a part to move it.">
+                        <svg class="bucket-fallback" viewBox="30 80 460 420" aria-hidden="true">
+                            <polygon points="60,370 260,270 260,110 60,210" fill="rgba(236,234,228,0.03)" stroke="rgba(236,234,228,0.35)" stroke-width="1.2"/>
+                            <polygon points="260,270 460,370 460,210 260,110" fill="rgba(236,234,228,0.05)" stroke="rgba(236,234,228,0.35)" stroke-width="1.2"/>
+                            <polygon points="260,470 60,370 260,270 460,370" fill="#151618" stroke="rgba(236,234,228,0.5)" stroke-width="1.2"/>
+                            <line x1="60" y1="370" x2="60" y2="210" stroke="rgba(236,234,228,0.35)" stroke-width="1.2"/>
+                            <line x1="460" y1="370" x2="460" y2="210" stroke="rgba(236,234,228,0.35)" stroke-width="1.2"/>
+                            <polygon points="230,295 300,330 230,365 160,330" fill="#2A2B2D" stroke="#ECEAE4" stroke-width="1.2"/>
+                            <polygon points="160,330 230,365 230,435 160,400" fill="#1B1C1E" stroke="#ECEAE4" stroke-width="1.2"/>
+                            <polygon points="230,365 300,330 300,400 230,435" fill="#222325" stroke="#ECEAE4" stroke-width="1.2"/>
+                            <polygon points="330,325 380,350 330,375 280,350" fill="#FF7A50" stroke="#0E0F10" stroke-width="1.2"/>
+                            <polygon points="280,350 330,375 330,425 280,400" fill="#FF5A2B" stroke="#0E0F10" stroke-width="1.2"/>
+                            <polygon points="330,375 380,350 380,400 330,425" fill="#D9461C" stroke="#0E0F10" stroke-width="1.2"/>
+                        </svg>
+                        </div>
+                        <figcaption class="caption"><span>Live: drag the parts</span><span>three.js + cannon-es</span></figcaption>
+                    </figure>
+                </div>
+            </div>
+        </section>
+
+        <section class="layer">
+            <div class="wrap">
+                <div class="layer-head"><span><span class="n">Layer 06</span>Focus areas</span></div>
+                <ul class="index-list">
+                    <li class="index-row"><span class="num">01</span><span class="txt">Selective Laser Sintering (SLS)</span></li>
+                    <li class="index-row"><span class="num">02</span><span class="txt">Physics-based model placement</span></li>
+                    <li class="index-row"><span class="num">03</span><span class="txt">3D slicer architecture and optimization</span></li>
+                    <li class="index-row"><span class="num">04</span><span class="txt">Machine control systems and software tooling</span></li>
+                </ul>
+            </div>
+        </section>
+
+        <section class="layer" id="work">
+            <div class="wrap">
+                <div class="layer-head"><span><span class="n">Layer 05</span>Selected work</span><a href="notebook.html">Notebook →</a></div>
+                <div class="work-wrap">
+                    <div class="work-list">
+                        <a class="work-row" href="notebook.html#micronics">
+                            <span><span class="work-title">Micronics</span><span class="work-desc">Co-founded a company building a desktop SLS 3D printer. Acquired by Formlabs in 2024.</span></span>
+                            <span class="work-meta">Co-founder · 2021–2024</span>
+                        </a>
+                        <a class="work-row" href="notebook.html#formlabs">
+                            <span><span class="work-title">PreForm</span><span class="work-desc">Software for preparing prints on Formlabs printers, including model measurement tools and print-job workflows.</span></span>
+                            <span class="work-meta">Formlabs · 2024–2026</span>
+                        </a>
+                        <a class="work-row" href="fun.html">
+                            <span><span class="work-title">Physics-based placement</span><span class="work-desc">Drop in STL models and watch them settle in a bucket with box physics. Try it in the Lab.</span></span>
+                            <span class="work-meta">Personal project</span>
+                        </a>
+                    </div>
+                    <figure class="work-preview">
+                        <img src="assets/images/thumbs/IMG_0461.jpg" alt="Wide view of a 3D printed part on a workshop bench" loading="lazy">
+                        <figcaption class="caption"><span>From the bench</span></figcaption>
+                    </figure>
+                </div>
+            </div>
+        </section>
+
+        <section class="layer">
+            <div class="wrap">
+                <div class="layer-head"><span><span class="n">Layer 04</span>Lab</span><a href="fun.html">Open the Lab →</a></div>
+                <div class="lab-panel">
+                    <div class="lab-copy">
+                        <div>
+                            <h2>Drop an STL.<br>Watch it settle.</h2>
+                            <p style="margin-top: 1rem">Box physics, drag to interact, export the packed scene as STL. It runs entirely in your browser.</p>
+                        </div>
+                        <div class="btn-row"><a class="btn" href="fun.html">Open the Lab</a></div>
+                    </div>
+                    <div class="lab-art" aria-hidden="true">
+                        <svg viewBox="0 0 520 520">
+                            <polygon points="60,370 260,270 260,110 60,210" fill="rgba(236,234,228,0.03)" stroke="rgba(236,234,228,0.35)" stroke-width="1.2"/>
+                            <polygon points="260,270 460,370 460,210 260,110" fill="rgba(236,234,228,0.05)" stroke="rgba(236,234,228,0.35)" stroke-width="1.2"/>
+                            <polygon points="260,470 60,370 260,270 460,370" fill="#0E0F10" stroke="rgba(236,234,228,0.5)" stroke-width="1.2"/>
+                            <polygon points="230,295 300,330 230,365 160,330" fill="#2A2B2D" stroke="#ECEAE4" stroke-width="1.2"/>
+                            <polygon points="160,330 230,365 230,435 160,400" fill="#1B1C1E" stroke="#ECEAE4" stroke-width="1.2"/>
+                            <polygon points="230,365 300,330 300,400 230,435" fill="#222325" stroke="#ECEAE4" stroke-width="1.2"/>
+                            <polygon points="330,325 380,350 330,375 280,350" fill="#FF7A50" stroke="#0E0F10" stroke-width="1.2"/>
+                            <polygon points="280,350 330,375 330,425 280,400" fill="#FF5A2B" stroke="#0E0F10" stroke-width="1.2"/>
+                            <polygon points="330,375 380,350 380,400 330,425" fill="#D9461C" stroke="#0E0F10" stroke-width="1.2"/>
+                        </svg>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="layer">
+            <div class="filmstrip-wrap">
+                <div class="layer-head"><span><span class="n">Layer 03</span>Frames</span><a href="gallery.html">All albums →</a></div>
+                <div class="filmstrip" id="filmstrip" tabindex="0" aria-label="Photo strip, scrolls horizontally">
+                <a href="gallery.html"><img src="assets/images/thumbs/hull-shoreline.jpg" alt="Hull shoreline" loading="lazy"></a>
+                <a href="gallery.html"><img src="assets/images/thumbs/reflecting-on-the-greenway.jpg" alt="Reflecting on the Greenway" loading="lazy"></a>
+                <a href="gallery.html"><img src="assets/images/thumbs/boston-light.jpg" alt="Boston Light" loading="lazy"></a>
+                <a href="gallery.html"><img src="assets/images/thumbs/the-tip-of-nantasket.jpg" alt="The tip of Nantasket" loading="lazy"></a>
+                <a href="gallery.html"><img src="assets/images/thumbs/the-ghost-of-paragon-park.jpg" alt="The ghost of Paragon Park" loading="lazy"></a>
+                <a href="gallery.html"><img src="assets/images/thumbs/camp.jpg" alt="Camp" loading="lazy"></a>
+                </div>
+            </div>
+        </section>
+
+        <section class="layer">
+            <div class="wrap">
+                <div class="layer-head"><span><span class="n">Layer 02</span>Experience</span></div>
+                <div class="exp-wrap">
+                    <div class="exp-list">
+                        <div class="exp-row"><div><strong>Formlabs</strong><span class="role">PreForm Software Engineer, then Software Engineer</span></div><span>2024 — 2026</span></div>
+                        <div class="exp-row"><div><strong>Micronics</strong><span class="role">Co-founder</span></div><span>2021 — 2024</span></div>
+                    </div>
+                    <aside class="now" aria-label="Now">
+                        <h3>Now</h3>
+                        <p>On hiatus, exploring the world, and looking for the next grand challenge.</p>
+                    </aside>
+                </div>
+            </div>
+        </section>
+
+        <section class="layer" id="contact">
+            <div class="wrap">
+                <div class="layer-head"><span><span class="n">Layer 01</span>Contact</span></div>
+                <a class="contact-big" href="mailto:luke.boppart@gmail.com">luke.boppart@gmail.com →</a>
+                <div class="social-row">
+                <a href="https://linkedin.com/in/luke-boppart-592302190/" target="_blank" rel="noopener noreferrer">LinkedIn</a>
+                <a href="https://github.com/lukewarm-h2o" target="_blank" rel="noopener noreferrer">GitHub</a>
+                <a href="https://youtube.com/@lukeboppart5860" target="_blank" rel="noopener noreferrer">YouTube</a>
+                <a href="https://instagram.com/luke_boppart" target="_blank" rel="noopener noreferrer">Instagram</a>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <div class="wrap">
+            <span>&copy; 2026 Luke Boppart. Built with love. · <a href="index.html">Garden version</a></span>
+            <span>Set in Schibsted Grotesk &amp; JetBrains Mono</span>
+        </div>
+    </footer>
+
+    <script type="module" src="js/hero.js"></script>
+    <script type="module">
+        // Swap the static strip for a random assortment of high-quality photos from the public albums.
+        import { loadFeed, shuffle } from './js/photos.js';
+        loadFeed().then(feed => {
+            if (!feed) return;
+            const photos = shuffle(feed.albums.flatMap(a => a.photos)).slice(0, 8);
+            if (photos.length < 3) return;
+            const strip = document.getElementById('filmstrip');
+            strip.replaceChildren(...photos.map(p => {
+                const a = document.createElement('a');
+                a.href = p.url || 'gallery.html';
+                if (p.url) { a.target = '_blank'; a.rel = 'noopener noreferrer'; }
+                const img = document.createElement('img');
+                img.src = p.src; img.alt = p.alt || p.title || p.album; img.loading = 'lazy';
+                if (p.w && p.h) { img.width = p.w; img.height = p.h; }
+                a.append(img);
+                return a;
+            }));
+        });
+    </script>
+    <script src="js/zrail.js" defer></script>
+</body>
+
+</html>
