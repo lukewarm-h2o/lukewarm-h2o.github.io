@@ -4,27 +4,91 @@ import argparse
 import json
 import os
 import sys
+import time
 from datetime import datetime, timezone
 from pathlib import Path
+from urllib.error import HTTPError
 from urllib.parse import urlencode, urlsplit, parse_qsl, urlunsplit
 from urllib.request import Request, urlopen
 
 API = "https://api.smugmug.com"
 SITE = "lukeboppart.smugmug.com"
+MIN_INTERVAL = 0.75  # seconds between API calls
+LOW_BUDGET = 5       # pause until the window resets when this few requests remain
+MAX_WAIT = 300       # longest single pause, in seconds
+MAX_ATTEMPTS = 3     # tries per request, including retries after a 429
 
 
-def request(path):
+class Throttle:
+    """Spaces API calls apart and honours rate-limit pauses."""
+
+    def __init__(self, min_interval=MIN_INTERVAL, sleep=time.sleep, clock=time.monotonic):
+        self.min_interval = min_interval
+        self.sleep = sleep
+        self.clock = clock
+        self.next_at = 0.0
+
+    def wait(self):
+        delay = self.next_at - self.clock()
+        if delay > 0:
+            self.sleep(delay)
+        self.next_at = self.clock() + self.min_interval
+
+    def pause(self, seconds):
+        self.sleep(min(max(seconds, 0.0), MAX_WAIT))
+        self.next_at = self.clock()
+
+
+SHARED_THROTTLE = Throttle()
+
+
+def seconds_until(value, default, now=time.time):
+    """Rate-limit headers may carry seconds to wait or an epoch timestamp."""
+    try:
+        number = float(value)
+    except (TypeError, ValueError):
+        return default
+    return max(0.0, number - now()) if number > 1_000_000_000 else number
+
+
+def request(path, opener=urlopen, throttle=None):
+    throttle = throttle or SHARED_THROTTLE
     url = urlsplit(API + path if path.startswith("/api/v2/") else path)
     if url.scheme != "https" or url.netloc != "api.smugmug.com" or not url.path.startswith("/api/v2/"):
         raise ValueError("Unexpected API URL")
     query = dict(parse_qsl(url.query))
     query.update(APIKey=os.environ["SMUGMUG_API_KEY"], _verbosity="1")
     url = urlunsplit(url._replace(query=urlencode(query)))
-    with urlopen(Request(url, headers={"Accept": "application/json"}), timeout=30) as response:
-        data = json.load(response)
-    if data.get("Code") != 200:
-        raise ValueError("SmugMug API request failed")
-    return data["Response"]
+    for attempt in range(1, MAX_ATTEMPTS + 1):
+        throttle.wait()
+        try:
+            with opener(Request(url, headers={"Accept": "application/json"}), timeout=30) as response:
+                headers = response.headers
+                data = json.load(response)
+        except HTTPError as error:
+            # The error text would include the request URL, which carries the key, so re-raise without logging it.
+            if error.code != 429 or attempt == MAX_ATTEMPTS:
+                raise
+            throttle.pause(seconds_until(error.headers.get("Retry-After"), default=60.0))
+            continue
+        remaining = (headers.get("X-RateLimit-Remaining") or "").strip()
+        if remaining.isdigit() and int(remaining) <= LOW_BUDGET:
+            throttle.pause(seconds_until(headers.get("X-RateLimit-Reset"), default=60.0))
+        if data.get("Code") != 200:
+            raise ValueError("SmugMug API request failed")
+        return data["Response"]
+
+
+def memoized(fetch):
+    """Reuse a response for the rest of one run, e.g. a cover image's sizes also listed as a photo."""
+    cache = {}
+
+    def wrapped(path):
+        if path not in cache:
+            cache[path] = fetch(path)
+        return cache[path]
+
+    return wrapped
 
 
 def link(obj, name):
@@ -91,6 +155,7 @@ def unlocked(obj):
 
 
 def collect(fetch=request):
+    fetch = memoized(fetch)
     user = fetch("/api/v2/user/lukeboppart")["User"]
     root = fetch(link(user, "Node"))["Node"]
     if not unlocked(root):

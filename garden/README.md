@@ -8,7 +8,7 @@ Nothing in this folder is deployed: the Pages workflow only copies the root HTML
 ## What lives where
 
 - `index.html`: the content cards. Each `<section data-z="…">` names the point on the path the camera reaches when that card is centred.
-- The garden gallery (the optional detour under the pergola) hangs eight photos. `index.html` lists built-in ones in `#garden-photos`; the public album feed replaces them when it loads.
+- The garden gallery (the optional detour under the pergola) hangs one panel per public SmugMug album, at least eight (topped up with extra photos) and at most eighteen: past eight, an open-air annex west of the pergola fills in, in the order set by `rank` in `ANNEX_SPOTS` (`garden/web/main.js`). `index.html` lists built-in photos in `#garden-photos`; the album feed replaces them when it loads.
 - `css/garden.css`: styles for the cards, altitude ruler and garden-gallery panel (shared tokens come from `css/styles.css`).
 - `js/garden.js`: built bundle (three.js included, no third-party requests). Do not edit by hand.
 - `assets/garden/*.glb`: the models the page loads.
