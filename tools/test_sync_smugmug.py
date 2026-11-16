@@ -1,10 +1,12 @@
 import json
 import os
+import tempfile
 import unittest
+from pathlib import Path
 from unittest import mock
 from urllib.error import HTTPError
 
-from sync_smugmug import Throttle, collect, memoized, request, seconds_until
+from sync_smugmug import Throttle, collect, download_image, localize_panels, memoized, request, seconds_until
 
 
 class PublicDiscoveryTests(unittest.TestCase):
@@ -41,10 +43,47 @@ class PublicDiscoveryTests(unittest.TestCase):
         self.assertEqual(photos[0]["title"], "A photo")
         self.assertEqual((photos[0]["w"], photos[0]["h"]), (4000, 3000))
         self.assertTrue(photos[0]["src"].startswith("https://photos.smugmug.com/"))
+        self.assertEqual(photos[0]["panel"], "https://photos.smugmug.com/test.jpg")
         responses["image"]["AlbumImage"]["Hidden"] = True
         self.assertEqual(collect(responses.__getitem__), [])
         responses["root"]["Node"]["EffectiveSecurityType"] = "Password"
         self.assertEqual(collect(responses.__getitem__), [])
+
+
+class PanelCopyTests(unittest.TestCase):
+    JPEG = b"\xff\xd8\xff\xe0 picture"
+
+    def albums(self, count):
+        return [{"name": "A", "photos": [{"title": str(i), "panel": f"https://photos.smugmug.com/{i}.jpg"}
+                                         for i in range(count)]}]
+
+    def test_copies_a_few_photos_per_album_and_drops_the_rest(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            stale = Path(tmp) / "0000000000000000.jpg"
+            stale.write_bytes(b"old")
+            albums = self.albums(4)
+            failing = albums[0]["photos"][1]["panel"]
+            saved = localize_panels(albums, tmp, download=lambda url: None if url == failing else self.JPEG,
+                                    per_album=2, sleep=lambda s: None)
+            photos = albums[0]["photos"]
+            self.assertEqual(saved, 2)
+            self.assertFalse(stale.exists())
+            self.assertEqual([("panel" in p) for p in photos], [True, False, True, False])
+            for photo in photos:
+                if "panel" in photo:
+                    self.assertRegex(photo["panel"], r"^/data/garden/[0-9a-f]{16}\.jpg$")
+                    self.assertEqual((Path(tmp) / photo["panel"].rsplit("/", 1)[1]).read_bytes(), self.JPEG)
+            self.assertEqual(len(list(Path(tmp).glob("*.jpg"))), 2)
+
+    def test_download_refuses_other_hosts_and_non_jpegs(self):
+        def opener(req, timeout=30):
+            return FakeResponse({"not": "an image"})
+
+        def never(req, timeout=30):
+            raise AssertionError("must not fetch")
+
+        self.assertIsNone(download_image("https://evil.example/a.jpg", opener=never))
+        self.assertIsNone(download_image("https://photos.smugmug.com/a.jpg", opener=opener))
 
 
 class FakeResponse:

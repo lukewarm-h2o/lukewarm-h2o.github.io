@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 """Export public album previews and a few display-sized photos per album, using an API key, never owner credentials."""
 import argparse
+import hashlib
 import json
 import os
 import sys
@@ -105,6 +106,13 @@ PHOTOS_PER_ALBUM = 12
 IMAGE_FETCH_COUNT = 30
 LARGE_SIZES = ("X2LargeImageUrl", "XLargeImageUrl", "LargeImageUrl", "MediumImageUrl")
 THUMB_SIZES = ("MediumImageUrl", "SmallImageUrl", "LargeImageUrl")
+# The 3D garden draws photos as WebGL textures, which the browser only allows for images served with CORS
+# headers. SmugMug's image host sends none, so a few display-sized photos per album are copied next to the
+# feed and served from the website itself.
+PANEL_SIZES = ("XLargeImageUrl", "LargeImageUrl", "MediumImageUrl")
+PANELS_PER_ALBUM = 4
+PANEL_MAX_BYTES = 2_000_000
+PANEL_PUBLIC_PATH = "/data/garden/"
 
 
 def first_safe(sizes, keys):
@@ -139,6 +147,9 @@ def collect_photos(album, fetch):
         photo = {"title": clean_text(image.get("Title") or image.get("FileName", "").rsplit(".", 1)[0]),
                  "caption": clean_text(image.get("Caption"), 300),
                  "url": page, "src": src, "thumb": thumb}
+        panel = first_safe(sizes, PANEL_SIZES)
+        if panel:
+            photo["panel"] = panel  # a remote URL here; localize_panels() swaps it for a copy on the website
         width, height = image.get("OriginalWidth"), image.get("OriginalHeight")
         if isinstance(width, int) and isinstance(height, int) and width > 0 and height > 0:
             photo.update(w=width, h=height)
@@ -199,19 +210,69 @@ def collect(fetch=request):
     return previews
 
 
+def download_image(url, opener=urlopen):
+    """A JPEG from SmugMug's public image host (no API key involved), or None if it is not one."""
+    if not safe_url(url, "photos.smugmug.com"):
+        return None
+    with opener(Request(url, headers={"Accept": "image/jpeg"}), timeout=30) as response:
+        body = response.read(PANEL_MAX_BYTES + 1)
+    return body if len(body) <= PANEL_MAX_BYTES and body.startswith(b"\xff\xd8\xff") else None
+
+
+def clear_panels(directory):
+    directory = Path(directory)
+    if directory.is_dir():
+        for old in directory.glob("*.jpg"):
+            old.unlink()
+
+
+def localize_panels(albums, directory, download=download_image, per_album=PANELS_PER_ALBUM, sleep=time.sleep):
+    """Copy a few photos per album into `directory` and point each photo's "panel" at the copy.
+
+    Photos beyond the limit, or whose copy fails, lose their "panel" key; the garden then keeps its built-in
+    pictures for those. Copies from earlier runs are removed first, so a photo that left the public feed goes too.
+    """
+    directory = Path(directory)
+    directory.mkdir(parents=True, exist_ok=True)
+    clear_panels(directory)
+    saved = 0
+    for album in albums:
+        kept = 0
+        for photo in album.get("photos", []):
+            remote = photo.pop("panel", None)
+            if not remote or kept >= per_album:
+                continue
+            try:
+                body = download(remote)
+            except Exception:
+                body = None
+            sleep(0.1)
+            if not body:
+                continue
+            name = hashlib.sha256(remote.encode()).hexdigest()[:16] + ".jpg"
+            (directory / name).write_bytes(body)
+            photo["panel"] = PANEL_PUBLIC_PATH + name
+            kept += 1
+        saved += kept
+    return saved
+
+
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--output", default="data/smugmug.json")
     args = parser.parse_args()
+    output = Path(args.output)
+    output.parent.mkdir(parents=True, exist_ok=True)
+    panels = output.parent / "garden"  # served as PANEL_PUBLIC_PATH
     failed = False
     try:
         albums = collect()
+        print(f"Copied {localize_panels(albums, panels)} photos for the garden gallery.")
     except Exception:
         # Do not log request URLs (which contain the key), or retain old previews on failure.
         print("SmugMug refresh failed; publishing no album previews.", file=sys.stderr)
         albums, failed = [], True
-    output = Path(args.output)
-    output.parent.mkdir(parents=True, exist_ok=True)
+        clear_panels(panels)
     output.write_text(json.dumps({"generatedAt": datetime.now(timezone.utc).isoformat(),
                                   "available": not failed, "albums": albums}, indent=2) + "\n")
     print(f"Exported {len(albums)} public album previews.")

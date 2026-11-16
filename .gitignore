@@ -4,6 +4,7 @@ __pycache__/
 *.pyc
 incoming-gallery/
 data/smugmug.json
+data/garden/
 _site/
 migration/
 garden/web/node_modules/
