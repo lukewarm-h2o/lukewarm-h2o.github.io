@@ -292,7 +292,8 @@ function populate(kit) {
   put('stair', 0, -165, { y: 12.25 });
   box(3.2, 0.6, 1.8, M.stone, 0, 11.96, -164.1); box(3.2, 0.6, 3.4, M.stone, 0, 7.96, -173.6);   // landings
   put('palm', -3.8, -182.6, { ry: 1 }); put('palm', 11, -158, { s: 0.78, ry: 3 }); put('palm', -12, -184, { s: 0.7, ry: 5 });
-  put('cactus', 5.5, -176); put('cactus', 7, -178.5, { s: 0.8, ry: 2 }); put('cactus', -10.5, -156, { ry: 4 });
+  put('cactus', 5.5, -176); put('cactus', 7, -178.5, { s: 0.8, ry: 2 });
+  annexCactus = put('cactus', -10.5, -156, { ry: 4 }); annexCactus.visible = !annexOpen();   // stands where the gallery annex goes
   put('banana', 3.6, -185); put('banana', -4, -187, { ry: 2, s: 1.15 }); put('banana', 9, -168.5, { ry: 4 });
   put('citrus', -9, -171); put('citrus', 9.5, -183, { ry: 2 }); put('citrus', -12.6, -172.4, { ry: 4, s: 0.9 }); put('citrus', 8, -150.5, { ry: 1 });
   [[2.4, -163.6], [-2.4, -163.6], [2.4, -173.6], [-2.4, -173.6], [-2, -150], [2.6, -189]].forEach(([x, z]) => put('pot', x, z, { ry: spin() }));
@@ -338,7 +339,8 @@ function populate(kit) {
   scatter('broom', sites(340, (x, z) => wild(4)(x, z) && coneDist(x, z) > 72, -150, 140, -100, 50, 0.8, 1.8));
   scatter('prickly_pear', [
     ...sites(150, wild(5), -130, 130, -202, -15, 0.8, 1.6),
-    ...[-152, -159, -168, -176].flatMap((z, i) => [{ x: (i % 2 ? 13.6 : -13.6), y: terrain(13.6, z), z, ry: i, s: 1.1 }]),
+    ...[-149.4, -159, -168, -176].flatMap(   // the first sits just off the terrace, clear of the gallery annex
+     (z, i) => [{ x: (i % 2 ? 13.6 : -13.6), y: terrain(13.6, z), z, ry: i, s: 1.1 }]),
   ]);
   scatter('agave', [
     ...sites(190, wild(3.2), -140, 130, -202, 20, 0.7, 1.7),
@@ -454,14 +456,24 @@ window.addEventListener('keydown', (e) => {
 });
 
 // ---------- garden gallery: photos hung under the pergola, visited one by one on an optional detour ----------
+// One panel per public album, never fewer than the pergola's eight. Past eight, an open-air annex west of the pergola
+// fills up, reached through the gap at the pergola's south-west corner.
 const GY = 12, EYE = GY + 1.55;
-const SPOTS = [                                   // panel centre and the way it faces, in walking order
+const PERGOLA_SPOTS = [                           // panel centre and the way it faces, in walking order
   { x: -8.5, z: -156.0, n: [1, 0] }, { x: -8.5, z: -153.2, n: [1, 0] }, { x: -6.4, z: -151.75, n: [0, -1] }, { x: -4.3, z: -152.9, n: [-1, 0] },
   { x: -4.3, z: -159.1, n: [-1, 0] }, { x: -5.3, z: -163.4, n: [0, 1] }, { x: -7.5, z: -163.4, n: [0, 1] }, { x: -8.5, z: -158.8, n: [1, 0] },
 ];
+const ANNEX_SPOTS = [                             // walking order; `rank` is the order they open in as albums are added
+  { x: -11.0, z: -163.4, n: [0, 1], rank: 8 }, { x: -13.3, z: -163.4, n: [0, 1], rank: 9 },
+  { x: -14.5, z: -161.0, n: [1, 0], rank: 6 }, { x: -14.5, z: -158.4, n: [1, 0], rank: 3 }, { x: -14.5, z: -155.8, n: [1, 0], rank: 1 }, { x: -14.5, z: -153.2, n: [1, 0], rank: 5 },
+  { x: -12.6, z: -151.75, n: [0, -1], rank: 7 },
+  { x: -8.64, z: -153.2, n: [-1, 0], rank: 2 }, { x: -8.64, z: -156.0, n: [-1, 0], rank: 0 }, { x: -8.64, z: -158.8, n: [-1, 0], rank: 4 },   // backs of the pergola's west panels
+];
+const MIN_PANELS = PERGOLA_SPOTS.length, MAX_PANELS = MIN_PANELS + ANNEX_SPOTS.length;
 const DOOR = new THREE.Vector3(-2.6, EYE, -156);  // gap in the pergola's east side: the way in and out
+const GATE = [new THREE.Vector3(-6.8, EYE, -161.6), new THREE.Vector3(-10.4, EYE, -161.6)];   // pergola side, annex side of the south-west gap
 const texLoader = new THREE.TextureLoader(); texLoader.setCrossOrigin('anonymous');
-const slots = SPOTS.map((sp) => {
+function makeSlot(sp, room) {
   const g = new THREE.Group(); g.position.set(sp.x, GY, sp.z); g.rotation.y = Math.atan2(sp.n[0], sp.n[1]);
   box(1.8, 2.3, 0.14, M.white, 0, 1.15, 0, g); box(1.92, 0.3, 0.24, M.stone, 0, 0.15, 0, g);
   const frame = box(1, 1, 0.05, M.wood, 0, 1.5, 0.085, g);
@@ -469,22 +481,43 @@ const slots = SPOTS.map((sp) => {
   const pic = add(new THREE.PlaneGeometry(1, 1), pm, 0, 1.5, 0.115, g);
   const fit = (w, h) => { const k = Math.min(1.56 / w, 1.2 / h); pic.scale.set(w * k, h * k, 1); frame.scale.set(w * k + 0.1, h * k + 0.1, 1); };
   fit(3, 2); scene.add(g);
-  return { sp, pm, fit, data: null };
-});
-function setPhoto(i, p) {                         // keeps the current picture if this one fails to load (e.g. a cross-origin refusal)
-  if (!slots[i] || !p || !p.src) return;
+  return { sp, room, g, pm, fit, data: null, want: null };
+}
+const pergolaSlots = PERGOLA_SPOTS.map((sp) => makeSlot(sp, 0));
+const annexSlots = ANNEX_SPOTS.map(() => null);   // built the first time they're needed
+let slots = pergolaSlots.slice(), annexCactus = null;   // `slots`: the panels in use, in walking order
+const annexOpen = () => slots.length > MIN_PANELS;
+function arrangePanels(count) {
+  const extra = clamp(count, MIN_PANELS, MAX_PANELS) - MIN_PANELS;
+  slots = pergolaSlots.slice();
+  ANNEX_SPOTS.forEach((sp, k) => {
+    const on = sp.rank < extra;
+    if (on && !annexSlots[k]) annexSlots[k] = makeSlot(sp, 1);
+    if (annexSlots[k]) annexSlots[k].g.visible = on;
+    if (on) slots.push(annexSlots[k]);
+  });
+  if (annexCactus) annexCactus.visible = !annexOpen();
+  if (detour.i >= slots.length) detour.i = 0;
+  if (detour.on) aimDetour(reduce);
+}
+function setPhoto(sl, p) {                        // keeps the current picture if this one fails to load (e.g. a cross-origin refusal)
+  if (!sl || !p || !p.src) return;
+  sl.want = p.src;
   texLoader.load(p.src, (t) => {
+    if (sl.want !== p.src) { t.dispose(); return; }   // a newer photo was asked for while this one loaded
     t.colorSpace = THREE.SRGBColorSpace; t.anisotropy = 4;
-    const sl = slots[i]; if (sl.pm.map) sl.pm.map.dispose();
+    if (sl.pm.map) sl.pm.map.dispose();
     sl.pm.map = t; sl.pm.color.set(0xffffff); sl.pm.needsUpdate = true; sl.fit(t.image.width, t.image.height); sl.data = p;
-    if (detour.on && detour.i === i) caption();
+    if (detour.on && slots[detour.i] === sl) caption();
   }, undefined, () => {});
 }
-const setPhotos = (list) => (list || []).slice(0, slots.length).forEach((p, i) => setPhoto(i, p));
-try { setPhotos(JSON.parse(document.getElementById('garden-photos').textContent)); } catch (_) {}
-window.addEventListener('garden:photos', (e) => setPhotos(e.detail));
+const setPhotos = (list) => {
+  list = Array.isArray(list) ? list : [];
+  arrangePanels(list.length);
+  list.slice(0, slots.length).forEach((p, i) => setPhoto(slots[i], p));
+};
 
-const detour = { on: false, leaving: false, i: 0, b: 0, scrollY: 0, pos: new THREE.Vector3(), quat: new THREE.Quaternion(), tPos: new THREE.Vector3(), tQuat: new THREE.Quaternion() };
+const detour = { on: false, i: 0, b: 0, room: 0, scrollY: 0, pos: new THREE.Vector3(), quat: new THREE.Quaternion(), tPos: new THREE.Vector3(), tQuat: new THREE.Quaternion() };
 const helper = new THREE.Object3D();
 const ui = { panel: document.getElementById('detour'), n: document.getElementById('detour-n'), name: document.getElementById('detour-name'), album: document.getElementById('detour-album'),
   note: document.getElementById('detour-note'), link: document.getElementById('detour-link'), main: document.querySelector('main') };
@@ -493,45 +526,79 @@ function caption() {
   ui.n.textContent = (detour.i + 1) + ' / ' + slots.length; ui.name.textContent = p.title || 'Untitled'; ui.album.textContent = p.album || ''; ui.note.textContent = p.caption || '';
   if (ui.link) { ui.link.href = p.url || 'gallery.html'; if (p.url) { ui.link.target = '_blank'; ui.link.rel = 'noopener noreferrer'; } else { ui.link.removeAttribute('target'); } }
 }
+// Moves that pass through the south-west gap (between pergola and annex, or out of the annex) and the way back
+// to the path are one continuous glide: eased along a smooth curve, so they never stop and restart at a waypoint.
+const glide = { on: false, toPath: false, t: 0, u: 0, dur: 2, pts: [], curve: null, q0: new THREE.Quaternion(), q: new THREE.Quaternion(), tq: new THREE.Quaternion() };
+const base = { pos: new THREE.Vector3(), quat: new THREE.Quaternion() };   // last camera pose before look offsets and shake
+function startGlide(pts, toPath) {
+  glide.pts = [base.pos.clone(), ...pts]; glide.curve = new THREE.CatmullRomCurve3(glide.pts, false, 'centripetal');
+  glide.dur = clamp(1.2 + glide.curve.getLength() / 4, 2, 5.5); glide.t = 0; glide.u = 0;
+  glide.q0.copy(base.quat); glide.q.copy(base.quat); glide.toPath = toPath; glide.on = true; detour.b = 1;
+}
+function stopGlide() {                            // carry on from wherever the glide had got to
+  if (!glide.on) return; glide.on = false; detour.pos.copy(base.pos); detour.quat.copy(base.quat); detour.b = 1;
+}
+const gates = (from, to) => from === to ? [] : to ? [GATE[0].clone(), GATE[1].clone()] : [GATE[1].clone(), GATE[0].clone()];
 function aimDetour(snap) {
-  const sp = SPOTS[detour.i];
+  const sl = slots[detour.i], sp = sl.sp;
   helper.position.set(sp.x + sp.n[0] * 2.7, EYE, sp.z + sp.n[1] * 2.7); helper.up.set(0, 1, 0); helper.lookAt(sp.x, GY + 0.75, sp.z);   // aim low so the photo sits in the upper half, clear of the caption panel
-   helper.rotateY(Math.PI);   // Object3D.lookAt points +Z at the target; cameras look down -Z
+  helper.rotateY(Math.PI);   // Object3D.lookAt points +Z at the target; cameras look down -Z
   detour.tPos.copy(helper.position); detour.tQuat.copy(helper.quaternion);
+  const via = snap ? [] : gates(detour.room, sl.room); detour.room = sl.room;
+  stopGlide();
+  if (via.length) { startGlide([...via, detour.tPos.clone()], false); glide.tq.copy(detour.tQuat); }
   if (snap) { detour.pos.copy(detour.tPos); detour.quat.copy(detour.tQuat); }
   caption(); lookAt.yawT = 0; lookAt.pitchT = 0;
 }
 function startDetour() {
-  detour.on = true; detour.leaving = false; detour.i = 0; detour.scrollY = window.scrollY;
-  detour.pos.copy(DOOR); detour.quat.copy(qPath); aimDetour(reduce);
+  detour.on = true; detour.i = 0; detour.scrollY = window.scrollY;
+  if (glide.on) stopGlide();                      // turned back mid-exit: carry on from here
+  else { detour.room = 0; detour.pos.copy(DOOR); detour.quat.copy(qPath); }
+  aimDetour(reduce);
   if (ui.panel) { ui.panel.hidden = false; ui.main.inert = true; document.documentElement.classList.add('is-detour'); const b = ui.panel.querySelector('[data-detour="next"]'); if (b) b.focus({ preventScroll: true }); }
 }
 function endDetour() {
-  if (!detour.on) return; detour.on = false; detour.leaving = !reduce; detour.tPos.copy(DOOR);
+  if (!detour.on) return; detour.on = false;
+  if (!reduce) {
+    const out = DOOR.clone().add(new THREE.Vector3(1.2, 0, 0));   // just outside the door, so the curve leaves square to it
+    stopGlide(); startGlide([...gates(detour.room, 0), DOOR.clone(), out, camPos.clone()], true);
+  }
+  detour.room = 0;
   if (ui.panel) { ui.panel.hidden = true; ui.main.inert = false; document.documentElement.classList.remove('is-detour'); const b = document.querySelector('[data-detour="start"]'); if (b) b.focus({ preventScroll: true }); }
 }
+const step = (d) => { detour.i = (detour.i + d + slots.length) % slots.length; aimDetour(reduce); };
 document.addEventListener('click', (e) => {
   const b = e.target.closest && e.target.closest('[data-detour]'); if (!b) return;
   const a = b.dataset.detour;
-  if (a === 'start') startDetour(); else if (a === 'end') endDetour();
-  else { detour.i = (detour.i + (a === 'next' ? 1 : slots.length - 1)) % slots.length; aimDetour(reduce); }
+  if (a === 'start') startDetour(); else if (a === 'end') endDetour(); else step(a === 'next' ? 1 : -1);
 });
-window.__detour = { start: startDetour, end: endDetour, next: () => { detour.i = (detour.i + 1) % slots.length; aimDetour(reduce); } };
+window.__detour = { start: startDetour, end: endDetour, next: () => step(1), panels: () => slots.length };
+try { setPhotos(JSON.parse(document.getElementById('garden-photos').textContent)); } catch (_) {}
+window.addEventListener('garden:photos', (e) => setPhotos(e.detail));
 
 const qYaw = new THREE.Quaternion(), UP = new THREE.Vector3(0, 1, 0);
 function placeCamera(dt) {
   pose(cur);
-  // blend between the path and the gallery viewpoint; leaving goes back out through the door first
-  if (detour.leaving && detour.pos.distanceTo(DOOR) < 0.6) detour.leaving = false;
-  const inside = detour.on || detour.leaving;
-  detour.b = reduce ? (detour.on ? 1 : 0) : clamp(detour.b + (inside ? 1 : -1) * dt / 1.6, 0, 1);
-  if (detour.b > 0) {
-    const k = 1 - Math.exp(-dt * 2.4);
-    detour.pos.lerp(detour.tPos, reduce ? 1 : k); detour.quat.slerp(detour.leaving ? qPath : detour.tQuat, reduce ? 1 : k);
-    const e = detour.b * detour.b * (3 - 2 * detour.b);
-    camera.position.lerpVectors(camPos, detour.pos, e);
-    camera.quaternion.slerpQuaternions(qPath, detour.quat, e);
-  } else camera.quaternion.copy(qPath);
+  // blend between the path and the gallery viewpoint
+  if (glide.on) {
+    glide.t += dt; const u = clamp(glide.t / glide.dur, 0, 1);
+    if (glide.toPath) { glide.pts[glide.pts.length - 1].copy(camPos); glide.curve.updateArcLengths(); }   // the path camera may move if the page scrolls
+    glide.u = u * u * u * (u * (u * 6 - 15) + 10);                                // smootherstep: no jolt at either end
+    camera.position.copy(glide.curve.getPointAt(glide.u));
+    const r = clamp(u * 1.35, 0, 1);                                              // finish turning a little before arriving
+    glide.q.slerpQuaternions(glide.q0, glide.toPath ? qPath : glide.tq, r * r * (3 - 2 * r)); camera.quaternion.copy(glide.q);
+    if (u >= 1) { glide.on = false; if (glide.toPath) detour.b = 0; else { detour.pos.copy(camera.position); detour.quat.copy(camera.quaternion); } }
+  } else {
+    if (detour.on || detour.b > 0) detour.b = reduce ? (detour.on ? 1 : 0) : clamp(detour.b + (detour.on ? 1 : -1) * dt / 1.6, 0, 1);
+    if (detour.b > 0) {
+      const k = 1 - Math.exp(-dt * 2.4);
+      detour.pos.lerp(detour.tPos, reduce ? 1 : k); detour.quat.slerp(detour.tQuat, reduce ? 1 : k);
+      const e = detour.b * detour.b * (3 - 2 * detour.b);
+      camera.position.lerpVectors(camPos, detour.pos, e);
+      camera.quaternion.slerpQuaternions(qPath, detour.quat, e);
+    } else camera.quaternion.copy(qPath);
+  }
+  base.pos.copy(camera.position); base.quat.copy(camera.quaternion);
   // drag-look offsets
   if (!lookAt.drag && time > lookAt.hold) { const k = Math.exp(-dt * 1.3); lookAt.yawT *= k; lookAt.pitchT *= k; }
   const k = reduce ? 1 : 1 - Math.exp(-dt * 10);

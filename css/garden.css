@@ -12,6 +12,8 @@
 
 .stop { align-items: center; display: flex; min-height: 125vh; padding: 0 var(--gutter); }
 .stop:first-child { align-items: flex-start; min-height: 105vh; padding-top: clamp(1.5rem, 8vh, 5rem); }
+/* with the 3D scene, open on the eruption: the first card starts just below the crater rim */
+.has-gl .stop:first-child { padding-top: 54vh; }
 .stop.right { justify-content: flex-end; padding-right: calc(var(--gutter) + 48px); }
 .card {
     -webkit-backdrop-filter: blur(8px); backdrop-filter: blur(8px); background: rgba(14, 15, 16, 0.8);
@@ -60,6 +62,7 @@
 @media (max-width: 640px) {
     .stop, .stop.right { align-items: flex-end; padding: 0 12px 8vh; padding-right: 40px; }
     .stop:first-child { align-items: flex-start; padding-top: 1rem; }
+    .has-gl .stop:first-child { padding-top: 30vh; }   /* the wrapped top bar already takes about a quarter of the screen */
     .frames { grid-template-columns: repeat(3, 1fr); }
     .frames a:nth-child(4) { display: none; }
     #ruler { right: 4px; width: 30px; }
