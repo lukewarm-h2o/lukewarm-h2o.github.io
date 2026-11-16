@@ -3,8 +3,9 @@ const grid = document.getElementById('smugmug-collections');
 const status = document.getElementById('smugmug-status');
 const photoCount = document.getElementById('photo-count');
 const albumCount = document.getElementById('collection-count');
-// Six-hour sync interval, plus two hours for deployment delays.
-const maxAge = 8 * 60 * 60 * 1000;
+// The sync is scheduled every six hours, but GitHub often runs it only about twice a day,
+// so previews stay up for a day (plus two hours for delays) before they count as stale.
+const maxAge = 26 * 60 * 60 * 1000;
 let expiry;
 
 function showUnavailable() {

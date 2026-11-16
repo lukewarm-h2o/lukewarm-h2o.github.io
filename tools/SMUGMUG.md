@@ -13,6 +13,13 @@ counts, public links and display-sized image URLs (up to 12 visible photos per a
 at XLarge size where available, never originals) go into the deployed website;
 originals and generated metadata are not committed to Git.
 
+The 3D garden on the home page draws photos as WebGL textures, which browsers only
+allow for images served with CORS headers. SmugMug's image host sends none, so the
+sync also copies up to four display-sized photos per album into `data/garden/` of
+the deployed site (ignored by Git) and lists each copy as the photo's `panel`. The
+garden hangs only those copies. They are replaced on every sync and removed when a
+sync fails.
+
 ## Activate deployment
 
 1. Add a GitHub Actions repository secret named `SMUGMUG_API_KEY` containing the
@@ -29,11 +36,16 @@ The original branch-based Pages deployment must be switched for this workflow to
 
 New public albums and visibility changes appear after the next successful deployment.
 GitHub schedules may be delayed; this is not an instant privacy revocation mechanism.
-The browser hides previews more than eight hours old (allowing two hours beyond
-the six-hour schedule for delays) and rechecks every five minutes
-and when returning to the tab. A failed sync deploys an empty list instead of old
+The browser hides previews more than 26 hours old and rechecks every five minutes
+and when returning to the tab. The schedule asks for a run every six hours, but
+GitHub usually delivers only about two a day, so a shorter limit left the site on
+its fallback photos for much of the day. A failed sync deploys an empty list instead of old
 previews, then marks the workflow failed. A deployment failure can still leave the
-previous JSON accessible at its URL; the expiry rule hides it in the UI only.
+previous JSON and garden photo copies accessible at their URLs; the expiry rule
+hides them in the UI only. Unlike the previews, which only link to SmugMug, the
+garden copies are files on this website: after an album is made private they stay
+reachable until the next successful deployment. Run the workflow manually to
+remove them sooner.
 Already-public cover URLs, downloaded copies and old Pages deployment artifacts
 cannot be revoked by the website. Use SmugMug's direct-image URL reset if necessary.
 Private sharing itself remains entirely controlled by SmugMug.

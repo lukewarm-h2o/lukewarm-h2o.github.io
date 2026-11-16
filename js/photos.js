@@ -1,8 +1,10 @@
 // Shared photo feed: public SmugMug photos (via the scheduled sync), with the original local set as a fallback.
 const SMUGMUG_SITE = 'lukeboppart.smugmug.com';
 const SMUGMUG_CDN = 'photos.smugmug.com';
-// Six-hour sync interval, plus two hours for deployment delays.
-const MAX_AGE = 8 * 60 * 60 * 1000;
+const PANEL_PATH = /^\/data\/garden\/[0-9a-f]{16}\.jpg$/;
+// The sync is scheduled every six hours, but GitHub often runs it only about twice a day,
+// so previews stay up for a day (plus two hours for delays) before they count as stale.
+const MAX_AGE = 26 * 60 * 60 * 1000;
 
 export function shuffle(list) {
     const copy = list.slice();
@@ -26,7 +28,9 @@ function normalizePhoto(photo, album) {
     if (!src) return null;
     const w = Number.isInteger(photo.w) && photo.w > 0 ? photo.w : null;
     const h = Number.isInteger(photo.h) && photo.h > 0 ? photo.h : null;
-    return { title: String(photo.title || ''), caption: String(photo.caption || ''), src, thumb,
+    // A copy on this website, for the 3D garden: WebGL cannot use SmugMug's images directly (no CORS headers).
+    const panel = typeof photo.panel === 'string' && PANEL_PATH.test(photo.panel) ? photo.panel : null;
+    return { title: String(photo.title || ''), caption: String(photo.caption || ''), src, thumb, panel,
         url: allowedUrl(photo.url, SMUGMUG_SITE), w, h, album: album.name };
 }
 
@@ -61,7 +65,7 @@ async function fromLocal() {
         const items = data.items.filter(item => item.collection === c.id);
         const album = { name: c.name, url: 'https://' + SMUGMUG_SITE + '/browse', cover: '/' + c.cover, count: items.length, photos: [] };
         album.photos = items.map(item => ({
-            title: item.title, caption: item.caption || '', src: '/' + item.thumb, thumb: '/' + item.thumb,
+            title: item.title, caption: item.caption || '', src: '/' + item.thumb, thumb: '/' + item.thumb, panel: '/' + item.thumb,
             url: null, w: item.width, h: item.height, album: c.name, alt: item.alt }));
         return album;
     }).filter(a => a.count > 0);
